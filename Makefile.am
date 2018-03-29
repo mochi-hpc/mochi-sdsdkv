@@ -1,6 +1,4 @@
-#!/bin/bash
-
-#
+# 
 # Copyright (c) 2018      Los Alamos National Security, LLC
 #                         All rights reserved.
 # 
@@ -8,6 +6,10 @@
 # top-level directory of this distribution.
 # 
 
-autoreconf --force --install
+ACLOCAL_AMFLAGS = -Iconfig
 
-exit $?
+EXTRA_DIST = \
+README.md LICENSE autogen
+
+SUBDIRS = \
+src

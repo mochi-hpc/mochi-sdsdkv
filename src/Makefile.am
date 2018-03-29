@@ -1,6 +1,4 @@
-#!/bin/bash
-
-#
+# 
 # Copyright (c) 2018      Los Alamos National Security, LLC
 #                         All rights reserved.
 # 
@@ -8,6 +6,17 @@
 # top-level directory of this distribution.
 # 
 
-autoreconf --force --install
+SUBDIRS =
 
-exit $?
+lib_LTLIBRARIES = \
+libsdsdkv.la
+
+include_HEADERS = \
+sdsdkv.h
+
+libsdsdkv_la_SOURCES = \
+sdsdkv.cc
+
+libquo_la_CFLAGS =
+libquo_la_LDFLAGS = -version-info @SDSDKV_LIBVINFO@
+libquo_la_LIBADD =
