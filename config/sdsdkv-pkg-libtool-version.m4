@@ -68,7 +68,7 @@
 # 2:0:0. This release has a new, but backwards incompatible interface.
 
 AC_DEFUN([AX_SDSDKV_LIBTOOL_VERSION], [dnl
-    SDSDKV_VERSION_CURRENT=6
+    SDSDKV_VERSION_CURRENT=1
     SDSDKV_VERSION_REVISION=0
     SDSDKV_VERSION_AGE=0
 

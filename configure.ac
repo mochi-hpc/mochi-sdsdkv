@@ -1,20 +1,18 @@
-# 
+#
 # Copyright (c) 2018      Los Alamos National Security, LLC
 #                         All rights reserved.
-# 
+#
 # This file is part of the sdsdkv project. See the LICENSE file at the
 # top-level directory of this distribution.
-# 
+#
 
 AC_PREREQ([2.60])
 
-AC_INIT(
-    [sdsdkv],
-    [0.1-alpha],
-    [samuel@lanl.gov],
-    [sdsdkv],
-    [TODO add link to project]
-)
+AC_INIT([sdsdkv],
+        [0.1-alpha],
+        [samuel@lanl.gov],
+        [sdsdkv])
+#dnl TODO(skg) add project URL.
 
 AC_CONFIG_MACRO_DIR([config])
 AC_CONFIG_SRCDIR([src])
@@ -61,12 +59,10 @@ AC_PROG_CXXCPP
 AC_PROG_CXX_C_O
 
 AX_PROG_MPICXX
-# determine whether or not we have a C++ wrapper compiler that can deal with
-# mpi apps.  if not disable C++ support.
+
 AS_IF([test "x$AX_PROG_MPICXX_HAVE_MPICXX" != "x1"],dnl
-      [AC_MSG_WARN(
+      [AC_MSG_ERROR(
        [*** CXX cannot compile MPI apps. set CXX to something that can. ***])])
-AM_CONDITIONAL(SDSDKV_WITH_MPICXX, test "x$AX_PROG_MPICXX_HAVE_MPICXX" = "x1")
 
 ################################################################################
 # Libtool things
@@ -108,26 +104,12 @@ cat << EOF
 | target      : ${target}
 | CC          : ${CC}
 | CFLAGS      : ${CFLAGS}
+| CXX         : ${CXX}
+| CXXFLAGS    : ${CXXFLAGS}
 | CPP         : ${CPP}
 | CPPFLAGS    : ${CPPFLAGS}
 | LDFLAGS     : ${LDFLAGS}
 | LIBS        : ${LIBS}
 +-------------------------------------------------------------------------------
-| C++ Support Configuration ::::::::::::::::::::::::::::::::::::::::::::::::::
-+-------------------------------------------------------------------------------
-EOF
 
-if test "x$AX_PROG_MPICXX_HAVE_MPICXX" = "x1"; then
-cat << EOF
-| CXX         : ${CXX}
-| CXXFLAGS    : ${CXXFLAGS}
-EOF
-else
-cat << EOF
-| Not Enabled
-EOF
-fi
-
-cat << EOF
-+-------------------------------------------------------------------------------
 EOF
