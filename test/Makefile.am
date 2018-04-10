@@ -6,11 +6,10 @@
 # top-level directory of this distribution.
 #
 
-ACLOCAL_AMFLAGS = -Iconfig
+noinst_PROGRAMS = \
+trivial
 
-EXTRA_DIST = \
-README.md LICENSE autogen
-
-SUBDIRS = \
-src \
-test
+###
+trivial_SOURCES  = trivial.cc
+trivial_CXXFLAGS = -I$(top_srcdir)/src
+trivial_LDADD    = $(top_builddir)/src/libsdsdkv.la

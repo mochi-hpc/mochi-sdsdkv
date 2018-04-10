@@ -10,8 +10,7 @@
  * @file sdsdkv.h
  */
 
-#ifndef SDSDKV_H_INCLUDED
-#define SDSDKV_H_INCLUDED
+#pragma once
 
 // For exported MPI types.
 #include "mpi.h"
@@ -24,9 +23,9 @@ extern "C" {
 #define SDSDKV 1
 
 /** Opaque sdsdkv context. */
-struct sdsdkv_t;
+struct sdsdkv;
 /** Convenience typedef. */
-typedef struct sdsdkv_t sdsdkv_t;
+typedef struct sdsdkv sdsdkv_t;
 /** External context type. */
 typedef sdsdkv_t* sdsdkv_context;
 
@@ -53,8 +52,23 @@ enum {
     SDSDKV_ERR_NOT_FOUND
 };
 
+/**
+ *
+ */
+int
+sdsdkv_create(
+    sdsdkv_context *c,
+    MPI_Comm c_comm
+);
+
+/**
+ *
+ */
+int
+sdsdkv_destroy(
+    sdsdkv_context c
+);
+
 #ifdef __cplusplus
 }
-#endif
-
 #endif

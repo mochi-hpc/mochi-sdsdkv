@@ -60,24 +60,14 @@ AM_PROG_AR
 LT_PREREQ([2.4.2])
 LT_INIT
 
-# checks for header files.
-AC_CHECK_HEADERS([\
-inttypes.h limits.h stdint.h stdlib.h string.h unistd.h stdbool.h time.h \
-getopt.h ctype.h netdb.h sys/socket.h netinet/in.h arpa/inet.h sys/types.h \
-stddef.h assert.h pthread.h sys/mman.h sys/stat.h fcntl.h syscall.h omp.h \
-sched.h strings.h stdio.h errno.h math.h
-])
-
 # checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
-# checks for library functions.
-AC_CHECK_FUNCS([memset strerror strtoul mmap])
-
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
+    test/Makefile
 ])
 
 AC_OUTPUT
