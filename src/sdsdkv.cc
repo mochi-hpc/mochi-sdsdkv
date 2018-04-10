@@ -11,13 +11,14 @@
  */
 
 #include "sdsdkv.h"
+#include "sdsdkv-mpi.h"
 
 #include <iostream>
 
 /** Type definition. */
 struct sdsdkv {
-    // Dup of initializing communicator.
-    MPI_Comm m_comm;
+    //
+    sdsdkv_mpi *mpi;
     //
     static int
     create(
@@ -26,6 +27,17 @@ struct sdsdkv {
     ) {
         if (!c) return SDSDKV_ERR_INVLD_ARG;
 
+        sdsdkv *tc = (sdsdkv *)calloc(1, sizeof(*tc));
+        if (!tc) return SDSDKV_ERR_OOR;
+
+        int erc = sdsdkv_mpi::create(&(tc->mpi), c_comm);
+        if (erc != SDSDKV_SUCCESS) {
+            destroy(tc);
+            return erc;
+        }
+
+        *c = tc;
+
         return SDSDKV_SUCCESS;
     }
     //
@@ -33,7 +45,10 @@ struct sdsdkv {
     destroy(
         sdsdkv_context c
     ) {
-        if (!c) return SDSDKV_ERR_INVLD_ARG;
+        if (c) {
+            sdsdkv_mpi::destroy(c->mpi);
+            free(c);
+        }
 
         return SDSDKV_SUCCESS;
     }
