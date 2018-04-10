@@ -37,24 +37,12 @@ AM_SILENT_RULES([yes])
 AM_CONFIG_HEADER([config.h])
 
 ################################################################################
-# C Language
+# C++ Language Support
 ################################################################################
 AC_USE_SYSTEM_EXTENSIONS
 
-AC_PROG_CC_C99
-AC_PROG_CC_C_O
-AC_PROG_CPP
-
-AX_PROG_MPICC
-
-AS_IF([test "x$AX_PROG_MPICC_HAVE_MPICC" != "x1"],dnl
-      [AC_MSG_ERROR(
-       [*** CC cannot compile MPI apps. set CC to something that can. ***])])
-
-################################################################################
-# C++ Language Support
-################################################################################
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX_11([], [mandatory])
 AC_PROG_CXXCPP
 AC_PROG_CXX_C_O
 
@@ -102,8 +90,6 @@ cat << EOF
 +-------------------------------------------------------------------------------
 | version     : ${VERSION}
 | target      : ${target}
-| CC          : ${CC}
-| CFLAGS      : ${CFLAGS}
 | CXX         : ${CXX}
 | CXXFLAGS    : ${CXXFLAGS}
 | CPP         : ${CPP}
