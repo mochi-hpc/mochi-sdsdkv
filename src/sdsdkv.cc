@@ -23,14 +23,14 @@ struct sdsdkv {
     static int
     create(
         sdsdkv_context *c,
-        MPI_Comm c_comm
+        sdsdkv_config *config
     ) {
         if (!c) return SDSDKV_ERR_INVLD_ARG;
 
         sdsdkv *tc = (sdsdkv *)calloc(1, sizeof(*tc));
         if (!tc) return SDSDKV_ERR_OOR;
 
-        int erc = sdsdkv_mpi::create(&(tc->mpi), c_comm);
+        int erc = sdsdkv_mpi::create(&(tc->mpi), config->init_comm);
         if (erc != SDSDKV_SUCCESS) {
             destroy(tc);
             return erc;
@@ -62,9 +62,9 @@ struct sdsdkv {
 int
 sdsdkv_create(
     sdsdkv_context *c,
-    MPI_Comm c_comm
+    sdsdkv_config *config
 ) {
-    return sdsdkv::create(c, c_comm);
+    return sdsdkv::create(c, config);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

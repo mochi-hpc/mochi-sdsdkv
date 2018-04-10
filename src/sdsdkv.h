@@ -52,13 +52,29 @@ enum {
     SDSDKV_ERR_NOT_FOUND
 };
 
+/** Defines types of supported process personalities. */
+enum sdsdkv_personality {
+    /** Client personality. */
+    SDSDKV_PERSONALITY_CLIENT = 0,
+    /** Server personality. */
+    SDSDKV_PERSONALITY_SERVER
+};
+
+/** Configuration struct. */
+typedef struct sdsdkv_config {
+    /** Communicator over which infrastructure will be created. */
+    MPI_Comm init_comm;
+    /** Process personality. */
+    sdsdkv_personality personality;
+} sdsdkv_config;
+
 /**
  *
  */
 int
 sdsdkv_create(
     sdsdkv_context *c,
-    MPI_Comm c_comm
+    sdsdkv_config *config
 );
 
 /**

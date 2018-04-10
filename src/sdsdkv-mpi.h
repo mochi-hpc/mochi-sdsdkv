@@ -17,8 +17,10 @@
 #include <cstdlib>
 
 struct sdsdkv_mpi {
+private:
     // Dup of initializing communicator.
-    MPI_Comm m_comm;
+    MPI_Comm m_commchan;
+public:
     //
     static int
     create(
@@ -30,7 +32,7 @@ struct sdsdkv_mpi {
         sdsdkv_mpi *tmpi = (sdsdkv_mpi *)calloc(1, sizeof(*tmpi));
         if (!tmpi) return SDSDKV_ERR_OOR;
 
-        int erc = MPI_Comm_dup(c_comm, &(tmpi->m_comm));
+        int erc = MPI_Comm_dup(c_comm, &(tmpi->m_commchan));
         if (erc != MPI_SUCCESS) {
             destroy(tmpi);
             return SDSDKV_ERR_MPI;
@@ -48,7 +50,7 @@ struct sdsdkv_mpi {
         int rc = SDSDKV_SUCCESS;
 
         if (mpi) {
-            int erc = MPI_Comm_free(&(mpi->m_comm));
+            int erc = MPI_Comm_free(&(mpi->m_commchan));
             if (erc != MPI_SUCCESS) {
                 rc = SDSDKV_ERR_MPI;
             }
