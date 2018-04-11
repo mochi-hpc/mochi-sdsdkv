@@ -28,8 +28,11 @@ main(int argc, char **argv)
 
     sdsdkv_config dkv_config = {
         /* .init_comm   = */ MPI_COMM_WORLD,
+
         /* .personality = */ (rank % 2 == 0) ? SDSDKV_PERSONALITY_CLIENT :
-                                               SDSDKV_PERSONALITY_SERVER
+                                               SDSDKV_PERSONALITY_SERVER,
+
+        /* .hash_be     = */ SDSDKV_HASHING_CH_PLACEMENT
     };
 
     erc = sdsdkv_create(&dkvc, &dkv_config);

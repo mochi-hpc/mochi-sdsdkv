@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "sdsdkv.h"
+
 #include "mpi.h"
 
 #include <cstdlib>
@@ -64,3 +66,7 @@ public:
     //
     ~sdsdkv_mpi(void) = delete;
 };
+
+/*
+ * vim: ft=cpp ts=4 sts=4 sw=4 expandtab
+ */

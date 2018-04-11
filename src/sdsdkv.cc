@@ -11,6 +11,7 @@
  */
 
 #include "sdsdkv.h"
+#include "sdsdkv-config.h"
 #include "sdsdkv-mpi.h"
 
 #include <iostream>
@@ -26,6 +27,10 @@ struct sdsdkv {
         sdsdkv_config *config
     ) {
         if (!c) return SDSDKV_ERR_INVLD_ARG;
+
+        if (!valid_config(*config)) {
+            return SDSDKV_ERR_INVLD_CONFIG;
+        }
 
         sdsdkv *tc = (sdsdkv *)calloc(1, sizeof(*tc));
         if (!tc) return SDSDKV_ERR_OOR;
@@ -74,3 +79,7 @@ sdsdkv_destroy(
 ) {
     return sdsdkv::destroy(c);
 }
+
+/*
+ * vim: ft=cpp ts=4 sts=4 sw=4 expandtab
+ */
