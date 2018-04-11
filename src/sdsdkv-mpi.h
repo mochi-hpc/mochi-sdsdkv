@@ -34,29 +34,36 @@ public:
         sdsdkv_mpi *tmpi = (sdsdkv_mpi *)calloc(1, sizeof(*tmpi));
         if (!tmpi) return SDSDKV_ERR_OOR;
 
-        int erc = MPI_Comm_dup(c_comm, &(tmpi->m_commchan));
-        if (erc != MPI_SUCCESS) {
-            destroy(tmpi);
-            return SDSDKV_ERR_MPI;
+        int rc = MPI_Comm_dup(c_comm, &(tmpi->m_commchan));
+        if (rc != MPI_SUCCESS) {
+            destroy(&tmpi);
+            rc = SDSDKV_ERR_MPI;
+        }
+        else {
+            rc = SDSDKV_SUCCESS;
         }
 
         *mpi = tmpi;
 
-        return SDSDKV_SUCCESS;
+        return rc;
     }
     //
     static int
     destroy(
-        sdsdkv_mpi *mpi
+        sdsdkv_mpi **mpi
     ) {
         int rc = SDSDKV_SUCCESS;
 
         if (mpi) {
-            int erc = MPI_Comm_free(&(mpi->m_commchan));
-            if (erc != MPI_SUCCESS) {
-                rc = SDSDKV_ERR_MPI;
+            if (*mpi) {
+                sdsdkv_mpi *tmpi = *mpi;
+                int erc = MPI_Comm_free(&(tmpi->m_commchan));
+                if (erc != MPI_SUCCESS) {
+                    rc = SDSDKV_ERR_MPI;
+                }
+                free(tmpi);
             }
-            free(mpi);
+            *mpi = NULL;
         }
 
         return rc;

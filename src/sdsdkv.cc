@@ -13,46 +13,83 @@
 #include "sdsdkv.h"
 #include "sdsdkv-config.h"
 #include "sdsdkv-mpi.h"
+#include "sdsdkv-server.h"
 
 #include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
 
 /** Type definition. */
 struct sdsdkv {
     //
-    sdsdkv_mpi *mpi;
+    pid_t m_pid;
+    //
+    sdsdkv_mpi *m_mpi;
+    //
+    sdsdkv_config *m_config;
     //
     static int
     create(
         sdsdkv_context *c,
         sdsdkv_config *config
     ) {
-        if (!c) return SDSDKV_ERR_INVLD_ARG;
-
+        if (!c || !config) return SDSDKV_ERR_INVLD_ARG;
+        // Check user-provided configuration.
         if (!config_valid(*config)) {
             return SDSDKV_ERR_INVLD_CONFIG;
         }
-
+        // Allocate space for instance.
         sdsdkv *tc = (sdsdkv *)calloc(1, sizeof(*tc));
         if (!tc) return SDSDKV_ERR_OOR;
-
-        int erc = sdsdkv_mpi::create(&(tc->mpi), config->init_comm);
-        if (erc != SDSDKV_SUCCESS) {
-            destroy(tc);
-            return erc;
+        // Cache process info.
+        tc->m_pid = getpid();
+        // Cache user-provided configuration.
+        int rc = config_dup(*config, &(tc->m_config));
+        if (rc != SDSDKV_SUCCESS) {
+            goto out;
         }
-
+        // Create MPI instance.
+        rc = sdsdkv_mpi::create(&(tc->m_mpi), config->init_comm);
+        if (rc != SDSDKV_SUCCESS) {
+            goto out;
+        }
+out:
+        if (rc != SDSDKV_SUCCESS) {
+            destroy(&tc);
+        }
+        // Return handle to caller.
         *c = tc;
+
+        return rc;
+    }
+    static int
+    open(
+        sdsdkv_context c
+    ) {
+        switch( c->m_config->personality) {
+            case (SDSDKV_PERSONALITY_CLIENT):
+                break;
+            case (SDSDKV_PERSONALITY_SERVER):
+                return sdsdkv_server::open(c);
+            default:
+                return SDSDKV_ERR_INVLD_CONFIG;
+        }
 
         return SDSDKV_SUCCESS;
     }
     //
     static int
     destroy(
-        sdsdkv_context c
+        sdsdkv_context *c
     ) {
         if (c) {
-            sdsdkv_mpi::destroy(c->mpi);
-            free(c);
+            if (*c) {
+                sdsdkv_context tc = *c;
+                sdsdkv_mpi::destroy(&(tc->m_mpi));
+                config_dup_destroy(&(tc->m_config));
+                free(tc);
+            }
+            *c = NULL;
         }
 
         return SDSDKV_SUCCESS;
@@ -64,6 +101,11 @@ struct sdsdkv {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// Exported API
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 int
 sdsdkv_create(
     sdsdkv_context *c,
@@ -72,12 +114,18 @@ sdsdkv_create(
     return sdsdkv::create(c, config);
 }
 
-////////////////////////////////////////////////////////////////////////////////
+int
+sdsdkv_open(
+    sdsdkv_context c
+) {
+    return sdsdkv::open(c);
+}
+
 int
 sdsdkv_destroy(
     sdsdkv_context c
 ) {
-    return sdsdkv::destroy(c);
+    return sdsdkv::destroy(&c);
 }
 
 /*

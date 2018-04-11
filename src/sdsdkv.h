@@ -104,6 +104,14 @@ sdsdkv_create(
  *
  */
 int
+sdsdkv_open(
+    sdsdkv_context c
+);
+
+/**
+ *
+ */
+int
 sdsdkv_destroy(
     sdsdkv_context c
 );

@@ -14,6 +14,8 @@
 
 #include "sdsdkv.h"
 
+#include <cstdlib>
+
 static bool
 config_valid(
     const sdsdkv_config &config
@@ -34,6 +36,50 @@ config_valid(
     }
 
     return true;
+}
+
+static int
+config_dup_destroy(
+    sdsdkv_config **config_dup
+) {
+    if (config_dup) {
+        if (*config_dup) {
+            sdsdkv_config *tc = *config_dup;
+            if (tc->db_name) free(tc->db_name);
+            free(*config_dup);
+        }
+        *config_dup = NULL;
+    }
+    return SDSDKV_SUCCESS;
+}
+
+static int
+config_dup(
+    const sdsdkv_config &config,
+    sdsdkv_config **config_dup
+) {
+    int rc = SDSDKV_SUCCESS;
+
+    sdsdkv_config *tc = (sdsdkv_config *)calloc(1, sizeof(*tc));
+    if (!tc) return SDSDKV_ERR_OOR;
+
+    tc->init_comm = config.init_comm;
+    tc->personality = config.personality;
+    tc->hash_be = config.hash_be;
+
+    if (-1 == asprintf(&(tc->db_name), "%s", config.db_name)) {
+        tc->db_name = NULL;
+        rc = SDSDKV_ERR_OOR;
+        goto out;
+    }
+out:
+    if (rc != SDSDKV_SUCCESS) {
+        config_dup_destroy(&tc);
+    }
+
+    *config_dup = tc;
+
+    return SDSDKV_SUCCESS;
 }
 
 /*

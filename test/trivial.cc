@@ -46,6 +46,9 @@ main(int argc, char **argv)
     erc = sdsdkv_create(&dkvc, &dkv_config);
     if (erc != SDSDKV_SUCCESS) abort_job();
 
+    erc = sdsdkv_open(dkvc);
+    if (erc != SDSDKV_SUCCESS) abort_job();
+
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) abort_job();
 
