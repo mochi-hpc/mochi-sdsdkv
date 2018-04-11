@@ -17,6 +17,7 @@ sdsdkv.h
 libsdsdkv_la_SOURCES = \
 sdsdkv-config.h \
 sdsdkv-mpi.h \
+sdsdkv-server.h \
 sdsdkv.cc
 
 libsdsdkv_la_CFLAGS =
