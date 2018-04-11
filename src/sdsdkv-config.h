@@ -15,7 +15,7 @@
 #include "sdsdkv.h"
 
 static bool
-valid_config(
+config_valid(
     const sdsdkv_config &config
 ) {
     switch (config.personality) {

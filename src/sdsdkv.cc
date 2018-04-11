@@ -28,7 +28,7 @@ struct sdsdkv {
     ) {
         if (!c) return SDSDKV_ERR_INVLD_ARG;
 
-        if (!valid_config(*config)) {
+        if (!config_valid(*config)) {
             return SDSDKV_ERR_INVLD_CONFIG;
         }
 
