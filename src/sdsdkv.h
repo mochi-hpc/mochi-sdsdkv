@@ -57,7 +57,7 @@ enum {
 ////////////////////////////////////////////////////////////////////////////////
 // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE //
 ////////////////////////////////////////////////////////////////////////////////
-// If you update sdsdkv_config_*, please update valid_config().
+// If you update sdsdkv_config_*, please update sdsdkv-config.h.
 
 /** Defines types of supported process personalities. */
 enum sdsdkv_config_personality {
@@ -75,6 +75,10 @@ enum sdsdkv_config_hashing {
 
 // TODO(skg) Export DB type configury for back-end store?
 
+// TODO(skg) Allow for two modes of operation:
+// - Total lash-up
+// - Connect
+
 /** Configuration struct. */
 typedef struct sdsdkv_config {
     /** Communicator over which infrastructure will be created. */
@@ -83,6 +87,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_personality personality;
     /** Hashing back-end. */
     sdsdkv_config_hashing hash_be;
+    /** Database name. */
+    char *db_name;
 } sdsdkv_config;
 
 /**
