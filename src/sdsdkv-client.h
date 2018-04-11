@@ -7,22 +7,22 @@
  */
 
 /**
- * @file sdsdkv-server.h
+ * @file sdsdkv-client.h
  */
 
 #pragma once
 
 #include "sdsdkv-config.h"
 
-#define SDSDKV_SERVER_VERBOSE
+#define SDSDKV_CLIENT_VERBOSE
 
-struct sdsdkv_server {
+struct sdsdkv_client {
     static int
     open(
         sdsdkv_config &config
     ) {
-#ifdef SDSDKV_SERVER_VERBOSE
-        printf("hi from server\n");
+#ifdef SDSDKV_CLIENT_VERBOSE
+        printf("hi from client\n");
 #endif
         return SDSDKV_SUCCESS;
     }

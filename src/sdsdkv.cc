@@ -13,6 +13,7 @@
 #include "sdsdkv.h"
 #include "sdsdkv-config.h"
 #include "sdsdkv-mpi.h"
+#include "sdsdkv-client.h"
 #include "sdsdkv-server.h"
 
 #include <iostream>
@@ -66,11 +67,12 @@ out:
     open(
         sdsdkv_context c
     ) {
-        switch( c->m_config->personality) {
+        // TODO(skg) Sync needed between clients and servers?
+        switch(c->m_config->personality) {
             case (SDSDKV_PERSONALITY_CLIENT):
-                break;
+                return sdsdkv_client::open(*(c->m_config));
             case (SDSDKV_PERSONALITY_SERVER):
-                return sdsdkv_server::open(c);
+                return sdsdkv_server::open(*(c->m_config));
             default:
                 return SDSDKV_ERR_INVLD_CONFIG;
         }

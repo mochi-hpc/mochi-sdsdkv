@@ -66,7 +66,7 @@ config_dup(
     tc->init_comm = config.init_comm;
     tc->personality = config.personality;
     tc->hash_be = config.hash_be;
-
+    // TODO(skg) may need to check for NULL here.
     if (-1 == asprintf(&(tc->db_name), "%s", config.db_name)) {
         tc->db_name = NULL;
         rc = SDSDKV_ERR_OOR;
