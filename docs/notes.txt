@@ -1,3 +1,14 @@
+# Example Spack Development Environment Setup
+spack load leveldb@1.20
+spack load abtsnoozer@master
+spack load ch-placement@master
+spack load ssg@master
+spack load argobots@dev-get-dev-basic
+spack load mercury@master
+spack load margo@master
+spack load sdskeyval@master
+spack load mpich@3.2.1
+
 # Example spack packages.yaml (located at $HOME/.spack/linux/packages.yaml)
 
 packages:

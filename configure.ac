@@ -64,10 +64,27 @@ LT_INIT
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
+################################################################################
+# External package dependencies
+################################################################################
+# Sets SDSKV_SERVER_CFLAGS
+#      SDSKV_SERVER_LIBS
+PKG_CHECK_MODULES([SDSKV_SERVER],dnl
+                  [sdskv-server],dnl
+                  [], dnl
+                  [AC_MSG_ERROR([sdskv-server pkg-config not found. ***])])
+
+# Sets SDSKV_CLIENT_CFLAGS
+#      SDSKV_CLIENT_LIBS
+PKG_CHECK_MODULES([SDSKV_CLIENT],dnl
+                  [sdskv-client],dnl
+                  [], dnl
+                  [AC_MSG_ERROR([sdskv-client pkg-config not found. ***])])
+
 AC_CONFIG_FILES([
     Makefile
     src/Makefile
-    test/Makefile
+    tests/Makefile
 ])
 
 AC_OUTPUT
