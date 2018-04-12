@@ -9,9 +9,8 @@
 ACLOCAL_AMFLAGS = -Iconfig
 
 EXTRA_DIST = \
-README.md LICENSE autogen
+README.md LICENSE autogen docs
 
 SUBDIRS = \
 src \
-test \
-docs
+test
