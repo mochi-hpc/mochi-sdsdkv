@@ -14,6 +14,8 @@
 
 #include "sdsdkv-config.h"
 
+#include "sdskv-client.h"
+
 #define SDSDKV_CLIENT_VERBOSE
 
 struct sdsdkv_client {

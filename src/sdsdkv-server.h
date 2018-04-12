@@ -14,6 +14,9 @@
 
 #include "sdsdkv-config.h"
 
+#include "margo.h"
+#include "sdskv-server.h"
+
 #define SDSDKV_SERVER_VERBOSE
 
 struct sdsdkv_server {
@@ -24,6 +27,13 @@ struct sdsdkv_server {
 #ifdef SDSDKV_SERVER_VERBOSE
         printf("hi from server\n");
 #endif
+
+        margo_instance_id mid = margo_init("test", MARGO_SERVER_MODE, 0, 0);
+
+        if (mid == MARGO_INSTANCE_NULL) {
+            return SDSDKV_ERR_SERVICE;
+        }
+
         return SDSDKV_SUCCESS;
     }
 };

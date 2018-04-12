@@ -21,6 +21,13 @@ sdsdkv-server.h \
 sdsdkv-client.h \
 sdsdkv.cc
 
-libsdsdkv_la_CFLAGS =
-libsdsdkv_la_LDFLAGS = -version-info @SDSDKV_LIBVINFO@
-libsdsdkv_la_LIBADD =
+libsdsdkv_la_CFLAGS = \
+@SDSKV_SERVER_CFLAGS@ \
+@SDSKV_CLIENT_CFLAGS@
+
+libsdsdkv_la_LDFLAGS = \
+-version-info @SDSDKV_LIBVINFO@
+
+libsdsdkv_la_LIBADD = \
+@SDSKV_SERVER_LIBS@ \
+@SDSKV_CLIENT_LIBS@

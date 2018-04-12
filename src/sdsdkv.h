@@ -38,6 +38,8 @@ enum {
     SDSDKV_ERR,
     /** System error. */
     SDSDKV_ERR_SYS,
+    /** Service error. */
+    SDSDKV_ERR_SERVICE,
     /** Out of resources error. */
     SDSDKV_ERR_OOR,
     /** Invalid argument provided to library. */
