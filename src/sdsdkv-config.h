@@ -46,6 +46,7 @@ config_dup_destroy(
         if (*config_dup) {
             sdsdkv_config *tc = *config_dup;
             if (tc->db_name) free(tc->db_name);
+            if (tc->comm_protocol) free(tc->comm_protocol);
             free(*config_dup);
         }
         *config_dup = NULL;
@@ -66,9 +67,15 @@ config_dup(
     tc->init_comm = config.init_comm;
     tc->personality = config.personality;
     tc->hash_be = config.hash_be;
-    // TODO(skg) may need to check for NULL here.
+    // TODO(skg) may need to check for NULL here. The idea being that perhaps a
+    // user can pass NULL here to mean something...
     if (-1 == asprintf(&(tc->db_name), "%s", config.db_name)) {
         tc->db_name = NULL;
+        rc = SDSDKV_ERR_OOR;
+        goto out;
+    }
+    if (-1 == asprintf(&(tc->comm_protocol), "%s", config.comm_protocol)) {
+        tc->comm_protocol = NULL;
         rc = SDSDKV_ERR_OOR;
         goto out;
     }

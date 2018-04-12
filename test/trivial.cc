@@ -33,14 +33,17 @@ main(int argc, char **argv)
     if (erc != MPI_SUCCESS) abort_job();
 
     sdsdkv_config dkv_config = {
-        /* .init_comm   = */ MPI_COMM_WORLD,
-
-        /* .personality = */ (rank % 2 == 0) ? SDSDKV_PERSONALITY_CLIENT :
-                                               SDSDKV_PERSONALITY_SERVER,
-
-        /* .hash_be     = */ SDSDKV_HASHING_CH_PLACEMENT,
-
-        /* .db_name     = */ (char *)"db/test"
+        /* .init_comm = */
+        MPI_COMM_WORLD,
+        /* .personality = */
+        (rank % 2 == 0) ? SDSDKV_PERSONALITY_CLIENT : SDSDKV_PERSONALITY_SERVER,
+        /* .hash_be = */
+        SDSDKV_HASHING_CH_PLACEMENT,
+        /* .db_name = */
+        (char *)"db/test",
+        /* .comm_protocol */
+        // TODO(skg) What's good?
+        (char *)"???",
     };
 
     erc = sdsdkv_create(&dkvc, &dkv_config);

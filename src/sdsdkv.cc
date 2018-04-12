@@ -16,9 +16,10 @@
 #include "sdsdkv-client.h"
 #include "sdsdkv-server.h"
 
-#include <iostream>
 #include <unistd.h>
 #include <sys/types.h>
+
+#include <iostream>
 
 /** Type definition. */
 struct sdsdkv {

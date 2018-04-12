@@ -89,6 +89,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_hashing hash_be;
     /** Database name. */
     char *db_name;
+    /** Communication protocol. */
+    char *comm_protocol;
 } sdsdkv_config;
 
 /**

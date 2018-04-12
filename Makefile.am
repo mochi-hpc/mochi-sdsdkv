@@ -13,4 +13,5 @@ README.md LICENSE autogen
 
 SUBDIRS = \
 src \
-test
+test \
+docs
