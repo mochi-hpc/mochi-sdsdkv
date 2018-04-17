@@ -24,7 +24,7 @@ private:
     //
     sdsdkv_mpi(void) = delete;
     // Dup of initializing communicator.
-    MPI_Comm m_commchan;
+    MPI_Comm m_commchan = MPI_COMM_NULL;
 public:
     //
     sdsdkv_mpi(

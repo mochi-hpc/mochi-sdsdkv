@@ -29,6 +29,8 @@ private:
     //
     sdskv_database_id_t m_dbid;
     //
+    std::string m_margo_addr;
+    //
     sdsdkv_server(void) = delete;
     //
     int
@@ -51,13 +53,17 @@ private:
         //
         margo_enable_remote_shutdown(m_mid);
         //
+        int rc = m_margo_set_addr();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        //
         return SDSDKV_SUCCESS;
     }
     //
     int
-    m_margo_get_addr(
-        std::string &addr_str
-    ) {
+    m_margo_set_addr(void)
+    {
         int rc = SDSDKV_SUCCESS;
         // Get server info. TODO(skg) Need to share via MPI?
         hg_addr_t self_addr;
@@ -82,7 +88,7 @@ private:
         }
         // No longer needed.
         margo_addr_free(m_mid, self_addr);
-        addr_str = std::string(self_addr_str);
+        m_margo_addr = std::string(self_addr_str);
         //
         return rc;
 err:
@@ -144,8 +150,7 @@ public:
             return rc;
         }
         //
-        std::string self_addr_str;
-        rc = m_margo_get_addr(self_addr_str);
+        rc = xchange_addrs();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
@@ -160,8 +165,16 @@ public:
             return rc;
         }
 #ifdef SDSDKV_SERVER_VERBOSE
-        printf("hi from server %s\n", self_addr_str.c_str());
+        printf("hi from server %s\n", m_margo_addr.c_str());
 #endif
+        //margo_wait_for_finalize(m_mid);
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
+    xchange_addrs(void)
+    {
         return SDSDKV_SUCCESS;
     }
 };

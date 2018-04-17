@@ -83,8 +83,6 @@ enum sdsdkv_config_db {
     SDSDKV_DB_LEVELDB
 };
 
-// TODO(skg) Export DB type configury for back-end store?
-
 // TODO(skg) Allow for two modes of operation:
 // - Total lash-up
 // - Connect

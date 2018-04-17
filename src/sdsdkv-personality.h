@@ -24,6 +24,8 @@ protected:
     sdsdkv_config *m_config = nullptr;
     //
     margo_instance_id m_mid = MARGO_INSTANCE_NULL;
+    // TODO(skg) FIXME
+    char m_margo_addr[4098] = {};
     //
     sdsdkv_personality(void) = default;
     //
@@ -46,6 +48,9 @@ public:
     //
     virtual int
     open(void) = 0;
+    //
+    virtual int
+    xchange_addrs(void) = 0;
 };
 
 /*

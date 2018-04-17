@@ -20,11 +20,34 @@
 #define SDSDKV_CLIENT_VERBOSE
 
 struct sdsdkv_client : public sdsdkv_personality {
+private:
+    //
+    sdskv_client_t m_kvcl;
+    //
     int
-    open(void) {
-#ifdef SDSDKV_CLIENT_VERBOSE
-        printf("hi from client\n");
-#endif
+    m_margo_init(void)
+    {
+        static const int use_progress_thread = 0;
+        // A value of -1 directs Margo to use the same execution context as that
+        // used for Mercury progress.
+        static const int rpc_thread_count = -1;
+        //
+        m_mid = margo_init(
+                       m_config->comm_protocol,
+                       MARGO_CLIENT_MODE,
+                       use_progress_thread,
+                       rpc_thread_count
+                   );
+        if (m_mid == MARGO_INSTANCE_NULL) {
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        int erc = sdskv_client_init(m_mid, &m_kvcl);
+        if(erc != SDSKV_SUCCESS) {
+            margo_finalize(m_mid);
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
         return SDSDKV_SUCCESS;
     }
 public:
@@ -35,6 +58,30 @@ public:
     //
     virtual
     ~sdsdkv_client(void) = default;
+    //
+    int
+    open(void) {
+        int rc = m_margo_init();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        //
+        rc = xchange_addrs();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+#ifdef SDSDKV_CLIENT_VERBOSE
+        printf("hi from client\n");
+#endif
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
+    xchange_addrs(void)
+    {
+        return SDSDKV_SUCCESS;
+    }
 };
 
 /*
