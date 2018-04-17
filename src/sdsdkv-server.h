@@ -85,6 +85,22 @@ err:
         margo_finalize(m_mid);
         return rc;
     }
+    //
+    int
+    keyval_register_provider(void) {
+        sdskv_provider_t provider;
+        int rc = sdskv_provider_register(
+                     m_mid,
+                     1,
+                     SDSKV_ABT_POOL_DEFAULT,
+                     &provider
+                 );
+        if (rc != SDSKV_SUCCESS) {
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        return SDSDKV_SUCCESS;
+    }
 
 public:
     //
@@ -105,6 +121,11 @@ public:
         //
         std::string self_addr_str;
         rc = get_margo_addr(self_addr_str);
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        //
+        rc = keyval_register_provider();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
