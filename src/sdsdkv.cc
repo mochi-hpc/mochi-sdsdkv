@@ -55,8 +55,13 @@ struct sdsdkv {
             goto out;
         }
         // Create MPI instance.
-        rc = sdsdkv_mpi::create(&(tc->m_mpi), config->init_comm);
-        if (rc != SDSDKV_SUCCESS) {
+        try {
+            tc->m_mpi = new sdsdkv_mpi(config->init_comm);
+        }
+        catch (const std::runtime_error &e) {
+            // TODO(skg) Do better.
+            std::cerr << e.what() << std::endl;
+            rc = SDSDKV_ERR_MPI;
             goto out;
         }
 out:
@@ -103,9 +108,9 @@ out:
         if (c) {
             if (*c) {
                 sdsdkv_context tc = *c;
-                sdsdkv_mpi::destroy(&(tc->m_mpi));
-                config_dup_destroy(&(tc->m_config));
+                delete tc->m_mpi;
                 delete tc->m_personality;
+                config_dup_destroy(&(tc->m_config));
                 free(tc);
             }
             *c = NULL;

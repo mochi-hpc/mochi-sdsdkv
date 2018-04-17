@@ -17,61 +17,29 @@
 #include "mpi.h"
 
 #include <cstdlib>
+#include <stdexcept>
 
 struct sdsdkv_mpi {
 private:
+    //
+    sdsdkv_mpi(void) = delete;
     // Dup of initializing communicator.
     MPI_Comm m_commchan;
 public:
     //
-    static int
-    create(
-        sdsdkv_mpi **mpi,
+    sdsdkv_mpi(
         MPI_Comm c_comm
     ) {
-        if (!mpi) return SDSDKV_ERR_INVLD_ARG;
-
-        sdsdkv_mpi *tmpi = (sdsdkv_mpi *)calloc(1, sizeof(*tmpi));
-        if (!tmpi) return SDSDKV_ERR_OOR;
-
-        int rc = MPI_Comm_dup(c_comm, &(tmpi->m_commchan));
+        int rc = MPI_Comm_dup(c_comm, &m_commchan);
         if (rc != MPI_SUCCESS) {
-            destroy(&tmpi);
-            rc = SDSDKV_ERR_MPI;
+            throw std::runtime_error("MPI_Comm_dup");
         }
-        else {
-            rc = SDSDKV_SUCCESS;
-        }
-
-        *mpi = tmpi;
-
-        return rc;
     }
     //
-    static int
-    destroy(
-        sdsdkv_mpi **mpi
-    ) {
-        int rc = SDSDKV_SUCCESS;
-
-        if (mpi) {
-            if (*mpi) {
-                sdsdkv_mpi *tmpi = *mpi;
-                int erc = MPI_Comm_free(&(tmpi->m_commchan));
-                if (erc != MPI_SUCCESS) {
-                    rc = SDSDKV_ERR_MPI;
-                }
-                free(tmpi);
-            }
-            *mpi = NULL;
-        }
-
-        return rc;
+    ~sdsdkv_mpi(void)
+    {
+        (void)MPI_Comm_free(&m_commchan);
     }
-    //
-    sdsdkv_mpi(void) = delete;
-    //
-    ~sdsdkv_mpi(void) = delete;
 };
 
 /*
