@@ -25,10 +25,15 @@
 struct sdsdkv_server : public sdsdkv_personality {
 private:
     //
+    sdskv_provider_t m_provider;
+    //
+    sdskv_database_id_t m_dbid;
+    //
     sdsdkv_server(void) = delete;
     //
     int
-    init_margo(void) {
+    m_margo_init(void)
+    {
         static const int use_progress_thread = 0;
         // A value of -1 directs Margo to use the same execution context as that
         // used for Mercury progress.
@@ -50,7 +55,7 @@ private:
     }
     //
     int
-    get_margo_addr(
+    m_margo_get_addr(
         std::string &addr_str
     ) {
         int rc = SDSDKV_SUCCESS;
@@ -87,15 +92,34 @@ err:
     }
     //
     int
-    keyval_register_provider(void) {
-        sdskv_provider_t provider;
+    m_keyval_register_provider(void)
+    {
         int rc = sdskv_provider_register(
                      m_mid,
                      1,
                      SDSKV_ABT_POOL_DEFAULT,
-                     &provider
+                     &m_provider
                  );
         if (rc != SDSKV_SUCCESS) {
+            margo_finalize(m_mid);
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
+    m_keyval_add_db(void)
+    {
+        int rc = sdskv_provider_add_database(
+                     m_provider,
+                     m_config->db_name,
+                     config_get_real_db_type(*m_config),
+                     NULL /* sdskv_compare_fn comp_fn */,
+                     &m_dbid
+                 );
+        if (rc != SDSKV_SUCCESS) {
+            margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
         //
@@ -112,20 +136,26 @@ public:
     ~sdsdkv_server(void) = default;
     //
     int
-    open(void) {
+    open(void)
+    {
         //
-        int rc = init_margo();
+        int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
         //
         std::string self_addr_str;
-        rc = get_margo_addr(self_addr_str);
+        rc = m_margo_get_addr(self_addr_str);
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
         //
-        rc = keyval_register_provider();
+        rc = m_keyval_register_provider();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        //
+        rc = m_keyval_add_db();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }

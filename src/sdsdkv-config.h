@@ -13,10 +13,11 @@
 #pragma once
 
 #include "sdsdkv.h"
+#include "sdskv-common.h"
 
 #include <cstdlib>
 
-static bool
+static inline bool
 config_valid(
     const sdsdkv_config &config
 ) {
@@ -27,18 +28,40 @@ config_valid(
         default:
             return false;
     }
-
+    //
     switch (config.hash_be) {
         case SDSDKV_HASHING_CH_PLACEMENT:
             break;
         default:
             return false;
     }
-
+    //
+    switch (config.db_type) {
+        case SDSDKV_DB_MAP:
+        case SDSDKV_DB_LEVELDB:
+            break;
+        default:
+            return false;
+    }
+    //
     return true;
 }
 
-static int
+static inline sdskv_db_type_t
+config_get_real_db_type(
+    const sdsdkv_config &config
+) {
+    switch (config.db_type) {
+        case SDSDKV_DB_MAP:
+            return KVDB_MAP;
+        case SDSDKV_DB_LEVELDB:
+            return KVDB_LEVELDB;
+        default:
+            return sdskv_db_type_t(-187);
+    }
+}
+
+static inline int
 config_dup_destroy(
     sdsdkv_config **config_dup
 ) {
@@ -54,7 +77,7 @@ config_dup_destroy(
     return SDSDKV_SUCCESS;
 }
 
-static int
+static inline int
 config_dup(
     const sdsdkv_config &config,
     sdsdkv_config **config_dup

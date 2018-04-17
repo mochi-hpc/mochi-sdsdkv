@@ -75,6 +75,14 @@ enum sdsdkv_config_hashing {
     SDSDKV_HASHING_CH_PLACEMENT = 0
 };
 
+/** Defines types of supported data stores. */
+enum sdsdkv_config_db {
+    /** std::map */
+    SDSDKV_DB_MAP = 0,
+    /** levedb */
+    SDSDKV_DB_LEVELDB
+};
+
 // TODO(skg) Export DB type configury for back-end store?
 
 // TODO(skg) Allow for two modes of operation:
@@ -89,6 +97,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_personality personality;
     /** Hashing back-end. */
     sdsdkv_config_hashing hash_be;
+    /** Database type. */
+    sdsdkv_config_db db_type;
     /** Database name. */
     char *db_name;
     /** Communication protocol. */

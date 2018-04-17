@@ -39,6 +39,8 @@ main(int argc, char **argv)
         (rank % 2 == 0) ? SDSDKV_PERSONALITY_CLIENT : SDSDKV_PERSONALITY_SERVER,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
+        /* .db_type = */
+        SDSDKV_DB_MAP,
         /* .db_name = */
         (char *)"db/test",
         /* .comm_protocol */
