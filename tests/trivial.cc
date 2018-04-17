@@ -42,8 +42,7 @@ main(int argc, char **argv)
         /* .db_name = */
         (char *)"db/test",
         /* .comm_protocol */
-        // TODO(skg) What's good?
-        (char *)"???",
+        (char *)"tcp",
     };
 
     erc = sdsdkv_create(&dkvc, &dkv_config);

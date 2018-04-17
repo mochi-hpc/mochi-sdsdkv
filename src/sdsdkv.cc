@@ -13,6 +13,7 @@
 #include "sdsdkv.h"
 #include "sdsdkv-config.h"
 #include "sdsdkv-mpi.h"
+#include "sdsdkv-personality.h"
 #include "sdsdkv-client.h"
 #include "sdsdkv-server.h"
 
@@ -20,6 +21,7 @@
 #include <sys/types.h>
 
 #include <iostream>
+#include <stdexcept>
 
 /** Type definition. */
 struct sdsdkv {
@@ -29,6 +31,8 @@ struct sdsdkv {
     sdsdkv_mpi *m_mpi;
     //
     sdsdkv_config *m_config;
+    //
+    sdsdkv_personality *m_personality;
     //
     static int
     create(
@@ -64,21 +68,32 @@ out:
 
         return rc;
     }
+    //
     static int
     open(
         sdsdkv_context c
     ) {
-        // TODO(skg) Sync needed between clients and servers?
-        switch(c->m_config->personality) {
-            case (SDSDKV_PERSONALITY_CLIENT):
-                return sdsdkv_client::open(*(c->m_config));
-            case (SDSDKV_PERSONALITY_SERVER):
-                return sdsdkv_server::open(*(c->m_config));
-            default:
-                return SDSDKV_ERR_INVLD_CONFIG;
+        try {
+            // TODO(skg) Sync needed between clients and servers?
+            switch(c->m_config->personality) {
+                case (SDSDKV_PERSONALITY_CLIENT):
+                    c->m_personality = new sdsdkv_client(*(c->m_config));
+                    break;
+                case (SDSDKV_PERSONALITY_SERVER): {
+                    c->m_personality = new sdsdkv_server(*(c->m_config));
+                    break;
+                }
+                default:
+                    return SDSDKV_ERR_INVLD_CONFIG;
+            }
         }
-
-        return SDSDKV_SUCCESS;
+        catch (const std::runtime_error &e) {
+            // TODO(skg) Do better.
+            std::cerr << e.what() << std::endl;
+            return SDSDKV_ERR;
+        }
+        //
+        return c->m_personality->open();
     }
     //
     static int
@@ -90,11 +105,11 @@ out:
                 sdsdkv_context tc = *c;
                 sdsdkv_mpi::destroy(&(tc->m_mpi));
                 config_dup_destroy(&(tc->m_config));
+                delete tc->m_personality;
                 free(tc);
             }
             *c = NULL;
         }
-
         return SDSDKV_SUCCESS;
     }
     //

@@ -47,7 +47,7 @@ config_dup_destroy(
             sdsdkv_config *tc = *config_dup;
             if (tc->db_name) free(tc->db_name);
             if (tc->comm_protocol) free(tc->comm_protocol);
-            free(*config_dup);
+            free(tc);
         }
         *config_dup = NULL;
     }

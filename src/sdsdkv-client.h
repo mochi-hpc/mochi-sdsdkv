@@ -13,21 +13,28 @@
 #pragma once
 
 #include "sdsdkv-config.h"
+#include "sdsdkv-personality.h"
 
 #include "sdskv-client.h"
 
 #define SDSDKV_CLIENT_VERBOSE
 
-struct sdsdkv_client {
-    static int
-    open(
-        sdsdkv_config &config
-    ) {
+struct sdsdkv_client : public sdsdkv_personality {
+    int
+    open(void) {
 #ifdef SDSDKV_CLIENT_VERBOSE
         printf("hi from client\n");
 #endif
         return SDSDKV_SUCCESS;
     }
+public:
+    //
+    sdsdkv_client(
+        const sdsdkv_config &config
+    ) : sdsdkv_personality(config) { }
+    //
+    virtual
+    ~sdsdkv_client(void) = default;
 };
 
 /*
