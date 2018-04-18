@@ -97,6 +97,11 @@ public:
     //
     virtual int
     open(void) = 0;
+    //
+#if 0 // TODO(skg)
+    virtual int
+    close(void) = 0;
+#endif
 };
 
 /*

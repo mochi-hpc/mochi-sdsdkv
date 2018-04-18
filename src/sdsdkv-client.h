@@ -16,6 +16,7 @@
 #include "sdsdkv-personality.h"
 
 #include "sdskv-client.h"
+#include "ch-placement.h"
 
 #define SDSDKV_CLIENT_VERBOSE
 
@@ -23,6 +24,8 @@ struct sdsdkv_client : public personality {
 private:
     //
     sdskv_client_t m_kvcl;
+    //
+    struct ch_placement_instance *m_place;
     //
     int
     m_margo_init(void)
@@ -77,9 +80,28 @@ private:
         //
         return SDSDKV_SUCCESS;
     }
+    // TODO(skg) Add ability to change placement implementation.
+    int
+    m_placement_init(void)
+    {
+        hg_size_t gsize = ssg_get_group_size(m_gid);
+        //
+        static const int virt_factor = 4;
+        static const int seed = 0;
+        m_place = ch_placement_initialize(
+                      "hash_lookup3",
+                      gsize,
+                      virt_factor,
+                      seed
+                  );
+        if (!m_place) return SDSDKV_ERR_SERVICE;
+        //
+        return SDSDKV_SUCCESS;
+    }
 public:
     //
-    sdsdkv_client(void) = default;
+    sdsdkv_client(void)
+        : m_place(nullptr) { }
     //
     virtual
     ~sdsdkv_client(void)
@@ -97,6 +119,9 @@ public:
         if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_ssg_init();
+        if (rc != SDSDKV_SUCCESS) return rc;
+        //
+        rc = m_placement_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_db_init();
