@@ -68,11 +68,6 @@ private:
         //
         margo_enable_remote_shutdown(m_mid);
         //
-        int rc = m_margo_set_addrs();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
-        //
         return SDSDKV_SUCCESS;
     }
     //
@@ -173,7 +168,9 @@ public:
         }
 #ifdef SDSDKV_SERVER_VERBOSE
         hg_size_t gsize = ssg_get_group_size(m_gid);
-        printf("hi from server %s, size %lu\n", m_margo_addr_str.c_str(), gsize);
+        std::string addr_str;
+        m_self_addr_to_string(addr_str);
+        printf("hi from server %s, size %lu\n", addr_str.c_str(), gsize);
 #endif
         margo_wait_for_finalize(m_mid);
         //

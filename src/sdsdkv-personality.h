@@ -20,6 +20,8 @@
 
 class personality {
 protected:
+    /** Default address string buffer size. */
+    static constexpr int s_addr_str_buff_size = 128;
     /** Points to already initialized sdsdkv_mpi instance. */
     sdsdkv_mpi *m_mpi;
     /** Copy of internal representation of user-provided configuration. */
@@ -29,40 +31,40 @@ protected:
     /** SSG group ID. */
     ssg_group_id_t m_gid;
     //
-    std::string m_margo_addr_str;
-    //
     int
-    m_margo_set_addrs(void)
-    {
-        int rc = SDSDKV_SUCCESS;
-        char self_addr_str[128];
-        hg_size_t self_addr_str_sz = sizeof(self_addr_str);
+    m_addr_to_string(
+        hg_addr_t target,
+        std::string &result
+    ) {
+        char addr_str[s_addr_str_buff_size];
+        hg_size_t addr_str_sz = sizeof(addr_str);
         //
-        hg_addr_t margo_addr;
-        hg_return_t hrc = margo_addr_self(m_mid, &margo_addr);
+        hg_return_t hrc = margo_addr_to_string(
+                              m_mid,
+                              addr_str,
+                              &addr_str_sz,
+                              target
+                          );
+        if (hrc != HG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        //
+        result = std::string(addr_str);
+        //
+        return SDSDKV_SUCCESS;
+    }
+    int
+    m_self_addr_to_string(
+        std::string &result
+    ) {
+        hg_addr_t self_addr;
+        //
+        hg_return_t hrc = margo_addr_self(m_mid, &self_addr);
         if (hrc != HG_SUCCESS) {
-            rc = SDSDKV_ERR_SERVICE;
-            goto err;
+            return SDSDKV_ERR_SERVICE;
         }
+        int rc = m_addr_to_string(self_addr, result);
         //
-        hrc = margo_addr_to_string(
-                  m_mid,
-                  self_addr_str,
-                  &self_addr_str_sz,
-                  margo_addr
-              );
-        if (hrc != HG_SUCCESS) {
-            rc = SDSDKV_ERR_SERVICE;
-            goto err;
-        }
-        m_margo_addr_str = std::string(self_addr_str);
+        margo_addr_free(m_mid, self_addr);
         //
-        margo_addr_free(m_mid, margo_addr);
-        //
-        return rc;
-    err:
-        margo_addr_free(m_mid, margo_addr);
-        margo_finalize(m_mid);
         return rc;
     }
 public:

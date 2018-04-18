@@ -69,8 +69,7 @@ private:
     int
     m_db_init(void)
     {
-        // TODO(skg) No magic constants.
-        char addr_str[128];
+        char addr_str[s_addr_str_buff_size];
         hg_size_t addr_str_sz = sizeof(addr_str);
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
