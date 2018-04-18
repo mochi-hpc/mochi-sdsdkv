@@ -50,6 +50,16 @@ private:
         //
         return SDSDKV_SUCCESS;
     }
+    int
+    m_ssg_init(void)
+    {
+        int rc = ssg_init(m_mid);
+        if (rc != SSG_SUCCESS) {
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        return SDSDKV_SUCCESS;
+    }
 public:
     //
     sdsdkv_client(void) = default;

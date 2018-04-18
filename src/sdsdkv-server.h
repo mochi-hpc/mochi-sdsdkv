@@ -72,7 +72,7 @@ private:
         //
         margo_enable_remote_shutdown(m_mid);
         //
-        int rc = m_margo_set_addr();
+        int rc = m_margo_set_addrs();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
@@ -89,7 +89,7 @@ private:
         }
         //
         int world_id = m_mpi->get_world_id();
-		m_gid = ssg_group_create_mpi(
+        m_gid = ssg_group_create_mpi(
                     m_config->group_name.c_str(),
                     // TODO(skg) is this correct?
                     m_mpi->get_peronality_comm(),
@@ -104,7 +104,7 @@ private:
     }
     //
     int
-    m_margo_set_addr(void)
+    m_margo_set_addrs(void)
     {
         int rc = SDSDKV_SUCCESS;
         char self_addr_str[128];
