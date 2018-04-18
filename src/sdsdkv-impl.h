@@ -29,7 +29,7 @@ class sdsdkv_impl {
     //
     sdsdkv_mpi *m_mpi;
     //
-    sdsdkv_config *m_config;
+    sdsdkv_iconfig *m_config;
     //
 public:
     //
@@ -43,19 +43,16 @@ public:
     {
         delete m_personality;
         delete m_mpi;
-        config_dup_destroy(&m_config);
+        delete m_config;
     }
     //
     int
     init(
         const sdsdkv_config &config
     ) {
-        // Check user-provided configuration.
-        if (!config_valid(config)) {
-            return SDSDKV_ERR_INVLD_CONFIG;
-        }
         // Cache user-provided configuration.
-        int rc = config_dup(config, &m_config);
+        m_config = new sdsdkv_iconfig();
+        int rc = m_config->init(config);
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
@@ -65,12 +62,17 @@ public:
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
-        //
-        m_personality = personality_factory::create(
-                            config.personality
-                        );
-        if (!m_personality) {
-            return SDSDKV_ERR_INVLD_CONFIG;
+        // Create personality instance based on configury.
+        rc = personality_factory::create(
+                 m_config->personality,
+                 &m_personality
+             );
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        rc = m_personality->init(config);
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
         }
         //
         return SDSDKV_SUCCESS;

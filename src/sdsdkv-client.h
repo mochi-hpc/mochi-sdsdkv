@@ -27,14 +27,13 @@ private:
     int
     m_margo_init(void)
     {
-#if 0
         static const int use_progress_thread = 0;
         // A value of -1 directs Margo to use the same execution context as that
         // used for Mercury progress.
         static const int rpc_thread_count = -1;
         //
         m_mid = margo_init(
-                       m_config->comm_protocol,
+                       m_config->comm_protocol.c_str(),
                        MARGO_CLIENT_MODE,
                        use_progress_thread,
                        rpc_thread_count
@@ -48,7 +47,6 @@ private:
             margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
-#endif
         //
         return SDSDKV_SUCCESS;
     }

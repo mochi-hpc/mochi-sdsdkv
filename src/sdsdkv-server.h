@@ -34,14 +34,13 @@ private:
     int
     m_margo_init(void)
     {
-#if 0
         static const int use_progress_thread = 0;
         // A value of -1 directs Margo to use the same execution context as that
         // used for Mercury progress.
         static const int rpc_thread_count = -1;
         //
         m_mid = margo_init(
-                       m_config->comm_protocol,
+                       m_config->comm_protocol.c_str(),
                        MARGO_SERVER_MODE,
                        use_progress_thread,
                        rpc_thread_count
@@ -57,7 +56,6 @@ private:
             return rc;
         }
         //
-#endif
         return SDSDKV_SUCCESS;
     }
     //
@@ -117,11 +115,10 @@ err:
     int
     m_keyval_add_db(void)
     {
-#if 0
         int rc = sdskv_provider_add_database(
                      m_provider,
-                     m_config->db_name,
-                     config_get_real_db_type(*m_config),
+                     m_config->db_name.c_str(),
+                     sdsdkv_iconfig::get_real_db_type(m_config->db_type),
                      NULL /* sdskv_compare_fn comp_fn */,
                      &m_dbid
                  );
@@ -129,7 +126,6 @@ err:
             margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
-#endif
         //
         return SDSDKV_SUCCESS;
     }

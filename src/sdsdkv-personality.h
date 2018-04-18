@@ -12,20 +12,36 @@
 
 #pragma once
 
-#include "sdsdkv.h"
+#include "sdsdkv-config.h"
 
 #include "margo.h"
 
-struct personality {
+class personality {
 protected:
     //
-    margo_instance_id m_mid = MARGO_INSTANCE_NULL;
+    sdsdkv_iconfig *m_config;
+    //
+    margo_instance_id m_mid;
 public:
     //
-    personality(void) = default;
+    personality(
+        void
+    ) : m_config(nullptr)
+      , m_mid(MARGO_INSTANCE_NULL) { }
     //
     virtual
-    ~personality(void) = default;
+    ~personality(void)
+    {
+        delete m_config;
+    }
+    //
+    virtual int
+    init(
+        const sdsdkv_config &config
+    ) {
+        m_config = new sdsdkv_iconfig();
+        return m_config->init(config);
+    }
     //
     virtual int
     open(void) = 0;

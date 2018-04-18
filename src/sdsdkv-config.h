@@ -16,101 +16,91 @@
 #include "sdskv-common.h"
 
 #include <cstdlib>
+#include <string>
 
-static inline bool
-config_valid(
-    const sdsdkv_config &config
-) {
-    switch (config.personality) {
-        case SDSDKV_PERSONALITY_CLIENT:
-        case SDSDKV_PERSONALITY_SERVER:
-            break;
-        default:
-            return false;
-    }
+/** Internal config representation. */
+class sdsdkv_iconfig {
     //
-    switch (config.hash_be) {
-        case SDSDKV_HASHING_CH_PLACEMENT:
-            break;
-        default:
-            return false;
-    }
-    //
-    switch (config.db_type) {
-        case SDSDKV_DB_MAP:
-        case SDSDKV_DB_LEVELDB:
-            break;
-        default:
-            return false;
-    }
-    //
-    return true;
-}
-
-static inline sdskv_db_type_t
-config_get_real_db_type(
-    const sdsdkv_config &config
-) {
-    switch (config.db_type) {
-        case SDSDKV_DB_MAP:
-            return KVDB_MAP;
-        case SDSDKV_DB_LEVELDB:
-            return KVDB_LEVELDB;
-        default:
-            return sdskv_db_type_t(-187);
-    }
-}
-
-static inline int
-config_dup_destroy(
-    sdsdkv_config **config_dup
-) {
-    if (config_dup) {
-        if (*config_dup) {
-            sdsdkv_config *tc = *config_dup;
-            if (tc->db_name) free(tc->db_name);
-            if (tc->comm_protocol) free(tc->comm_protocol);
-            free(tc);
+    static bool
+    valid(
+        const sdsdkv_config &config
+    ) {
+        switch (config.personality) {
+            case SDSDKV_PERSONALITY_CLIENT:
+            case SDSDKV_PERSONALITY_SERVER:
+                break;
+            default:
+                return false;
         }
-        *config_dup = NULL;
+        //
+        switch (config.hash_be) {
+            case SDSDKV_HASHING_CH_PLACEMENT:
+                break;
+            default:
+                return false;
+        }
+        //
+        switch (config.db_type) {
+            case SDSDKV_DB_MAP:
+            case SDSDKV_DB_LEVELDB:
+                break;
+            default:
+                return false;
+        }
+        //
+        return true;
     }
-    return SDSDKV_SUCCESS;
-}
-
-static inline int
-config_dup(
-    const sdsdkv_config &config,
-    sdsdkv_config **config_dup
-) {
-    int rc = SDSDKV_SUCCESS;
-
-    sdsdkv_config *tc = (sdsdkv_config *)calloc(1, sizeof(*tc));
-    if (!tc) return SDSDKV_ERR_OOR;
-
-    tc->init_comm = config.init_comm;
-    tc->personality = config.personality;
-    tc->hash_be = config.hash_be;
-    // TODO(skg) may need to check for NULL here. The idea being that perhaps a
-    // user can pass NULL here to mean something...
-    if (-1 == asprintf(&(tc->db_name), "%s", config.db_name)) {
-        tc->db_name = NULL;
-        rc = SDSDKV_ERR_OOR;
-        goto out;
+public:
+    // See sdsdkv.h to see what we are replicating.  ///////////////////////////
+    //
+    MPI_Comm init_comm;
+    //
+    sdsdkv_config_personality personality;
+    //
+    sdsdkv_config_hashing hash_be;
+    //
+    sdsdkv_config_db db_type;
+    //
+    std::string db_name;
+    //
+    std::string comm_protocol;
+    //
+    sdsdkv_iconfig(void) = default;
+    //
+    ~sdsdkv_iconfig(void) = default;
+    //
+    int
+    init(
+        const sdsdkv_config &config
+    ) {
+        if (!valid(config)) {
+            return SDSDKV_ERR_INVLD_CONFIG;
+        }
+        //
+        init_comm = config.init_comm;
+        personality = config.personality;
+        hash_be = config.hash_be;
+        db_type = config.db_type;
+        db_name = std::string(config.db_name);
+        comm_protocol = std::string(config.comm_protocol);
+        //
+        return SDSDKV_SUCCESS;
     }
-    if (-1 == asprintf(&(tc->comm_protocol), "%s", config.comm_protocol)) {
-        tc->comm_protocol = NULL;
-        rc = SDSDKV_ERR_OOR;
-        goto out;
+    //
+    static sdskv_db_type_t
+    get_real_db_type(
+        sdsdkv_config_db itype
+    ) {
+        switch (itype) {
+            case SDSDKV_DB_MAP:
+                return KVDB_MAP;
+            case SDSDKV_DB_LEVELDB:
+                return KVDB_LEVELDB;
+            default:
+                return sdskv_db_type_t(-187);
+        }
     }
-out:
-    if (rc != SDSDKV_SUCCESS) {
-        config_dup_destroy(&tc);
-    }
-
-    *config_dup = tc;
-
-    return SDSDKV_SUCCESS;
-}
+};
 
 /*
  * vim: ft=cpp ts=4 sts=4 sw=4 expandtab

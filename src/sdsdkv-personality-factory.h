@@ -23,17 +23,24 @@ class personality_factory {
     //
     ~personality_factory(void) = delete;
 public:
-    static personality *
-    create(sdsdkv_config_personality p)
-    {
+    static int
+    create(
+        sdsdkv_config_personality p,
+        personality **outp
+    ) {
         switch(p) {
             case SDSDKV_PERSONALITY_CLIENT:
-                return new sdsdkv_client();
+                *outp = new sdsdkv_client();
+                break;
             case SDSDKV_PERSONALITY_SERVER:
-                return new sdsdkv_server();
+                *outp = new sdsdkv_server();
+                break;
             default:
-                return nullptr;
+                *outp = nullptr;
+                return SDSDKV_ERR_INVLD_ARG;
         }
+        //
+        return SDSDKV_SUCCESS;
     }
 };
 

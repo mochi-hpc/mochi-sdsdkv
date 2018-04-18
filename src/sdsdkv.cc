@@ -14,7 +14,8 @@
 #include "sdsdkv-impl.h"
 
 /** Type definition. */
-struct sdsdkv {
+class sdsdkv {
+public:
     //
     sdsdkv(void) = delete;
     //
@@ -27,7 +28,7 @@ struct sdsdkv {
     ) {
         if (!c || !config) return SDSDKV_ERR_INVLD_ARG;
         //
-        *c = sdsdkv_context(NULL);
+        *c = (sdsdkv_context)NULL;
         //
         sdsdkv_impl *impl = new sdsdkv_impl();
         int rc = impl->init(*config);
@@ -36,7 +37,7 @@ struct sdsdkv {
             return rc;
         }
         // It's all good...
-        *c = sdsdkv_context(impl);
+        *c = (sdsdkv_context)impl;
         return SDSDKV_SUCCESS;
     }
     //
