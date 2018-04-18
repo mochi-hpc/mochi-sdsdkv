@@ -22,12 +22,8 @@ extern "C" {
 /** Convenience definition (in case anyone needs this). */
 #define SDSDKV 1
 
-/** Opaque sdsdkv context. */
-struct sdsdkv;
-/** Convenience typedef. */
-typedef struct sdsdkv sdsdkv_t;
 /** External context type. */
-typedef sdsdkv_t* sdsdkv_context;
+typedef void* sdsdkv_context;
 
 enum {
     /** Success. */

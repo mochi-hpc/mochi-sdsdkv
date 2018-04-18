@@ -22,7 +22,7 @@
 
 #define SDSDKV_SERVER_VERBOSE
 
-struct sdsdkv_server : public sdsdkv_personality {
+struct sdsdkv_server : public personality {
 private:
     //
     sdskv_provider_t m_provider;
@@ -31,11 +31,10 @@ private:
     //
     std::string m_margo_addr;
     //
-    sdsdkv_server(void) = delete;
-    //
     int
     m_margo_init(void)
     {
+#if 0
         static const int use_progress_thread = 0;
         // A value of -1 directs Margo to use the same execution context as that
         // used for Mercury progress.
@@ -58,6 +57,7 @@ private:
             return rc;
         }
         //
+#endif
         return SDSDKV_SUCCESS;
     }
     //
@@ -117,6 +117,7 @@ err:
     int
     m_keyval_add_db(void)
     {
+#if 0
         int rc = sdskv_provider_add_database(
                      m_provider,
                      m_config->db_name,
@@ -128,15 +129,14 @@ err:
             margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
+#endif
         //
         return SDSDKV_SUCCESS;
     }
 
 public:
     //
-    sdsdkv_server(
-        const sdsdkv_config &config
-    ) : sdsdkv_personality(config) { }
+    sdsdkv_server(void) = default;
     //
     virtual
     ~sdsdkv_server(void) = default;

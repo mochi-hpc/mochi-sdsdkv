@@ -18,8 +18,10 @@ libsdsdkv_la_SOURCES = \
 sdsdkv-config.h \
 sdsdkv-mpi.h \
 sdsdkv-personality.h \
+sdsdkv-personality-factory.h \
 sdsdkv-server.h \
 sdsdkv-client.h \
+sdsdkv-impl.h \
 sdsdkv.cc
 
 libsdsdkv_la_CFLAGS = \

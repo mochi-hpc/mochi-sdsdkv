@@ -19,7 +19,7 @@
 
 #define SDSDKV_CLIENT_VERBOSE
 
-struct sdsdkv_client : public sdsdkv_personality {
+struct sdsdkv_client : public personality {
 private:
     //
     sdskv_client_t m_kvcl;
@@ -27,6 +27,7 @@ private:
     int
     m_margo_init(void)
     {
+#if 0
         static const int use_progress_thread = 0;
         // A value of -1 directs Margo to use the same execution context as that
         // used for Mercury progress.
@@ -47,14 +48,13 @@ private:
             margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
+#endif
         //
         return SDSDKV_SUCCESS;
     }
 public:
     //
-    sdsdkv_client(
-        const sdsdkv_config &config
-    ) : sdsdkv_personality(config) { }
+    sdsdkv_client(void) = default;
     //
     virtual
     ~sdsdkv_client(void) = default;

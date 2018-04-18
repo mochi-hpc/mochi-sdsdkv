@@ -11,29 +11,14 @@
  */
 
 #include "sdsdkv.h"
-
-#include "sdsdkv-config.h"
-#include "sdsdkv-mpi.h"
-#include "sdsdkv-personality.h"
-#include "sdsdkv-client.h"
-#include "sdsdkv-server.h"
-
-#include <unistd.h>
-#include <sys/types.h>
-
-#include <iostream>
-#include <stdexcept>
+#include "sdsdkv-impl.h"
 
 /** Type definition. */
 struct sdsdkv {
     //
-    pid_t m_pid;
+    sdsdkv(void) = delete;
     //
-    sdsdkv_mpi *m_mpi;
-    //
-    sdsdkv_config *m_config;
-    //
-    sdsdkv_personality *m_personality;
+    ~sdsdkv(void) = delete;
     //
     static int
     create(
@@ -41,65 +26,26 @@ struct sdsdkv {
         sdsdkv_config *config
     ) {
         if (!c || !config) return SDSDKV_ERR_INVLD_ARG;
-        // Check user-provided configuration.
-        if (!config_valid(*config)) {
-            return SDSDKV_ERR_INVLD_CONFIG;
-        }
-        // Allocate space for instance.
-        sdsdkv *tc = (sdsdkv *)calloc(1, sizeof(*tc));
-        if (!tc) return SDSDKV_ERR_OOR;
-        // Cache process info.
-        tc->m_pid = getpid();
-        // Cache user-provided configuration.
-        int rc = config_dup(*config, &(tc->m_config));
+        //
+        *c = sdsdkv_context(NULL);
+        //
+        sdsdkv_impl *impl = new sdsdkv_impl();
+        int rc = impl->init(*config);
         if (rc != SDSDKV_SUCCESS) {
-            goto out;
+            delete impl;
+            return rc;
         }
-        // Create MPI instance.
-        try {
-            tc->m_mpi = new sdsdkv_mpi(config->init_comm);
-        }
-        catch (const std::runtime_error &e) {
-            // TODO(skg) Do better.
-            std::cerr << e.what() << std::endl;
-            rc = SDSDKV_ERR_MPI;
-            goto out;
-        }
-out:
-        if (rc != SDSDKV_SUCCESS) {
-            destroy(&tc);
-        }
-        // Return handle to caller.
-        *c = tc;
-
-        return rc;
+        // It's all good...
+        *c = sdsdkv_context(impl);
+        return SDSDKV_SUCCESS;
     }
     //
     static int
     open(
         sdsdkv_context c
     ) {
-        try {
-            // TODO(skg) Sync needed between clients and servers?
-            switch(c->m_config->personality) {
-                case (SDSDKV_PERSONALITY_CLIENT):
-                    c->m_personality = new sdsdkv_client(*(c->m_config));
-                    break;
-                case (SDSDKV_PERSONALITY_SERVER): {
-                    c->m_personality = new sdsdkv_server(*(c->m_config));
-                    break;
-                }
-                default:
-                    return SDSDKV_ERR_INVLD_CONFIG;
-            }
-        }
-        catch (const std::runtime_error &e) {
-            // TODO(skg) Do better.
-            std::cerr << e.what() << std::endl;
-            return SDSDKV_ERR;
-        }
-        //
-        return c->m_personality->open();
+        sdsdkv_impl *impl = (sdsdkv_impl *)c;
+        return impl->open();
     }
     //
     static int
@@ -108,20 +54,13 @@ out:
     ) {
         if (c) {
             if (*c) {
-                sdsdkv_context tc = *c;
-                delete tc->m_mpi;
-                delete tc->m_personality;
-                config_dup_destroy(&(tc->m_config));
-                free(tc);
+                sdsdkv_impl *impl = (sdsdkv_impl *)*c;
+                delete impl;
             }
             *c = NULL;
         }
         return SDSDKV_SUCCESS;
     }
-    //
-    sdsdkv(void) = delete;
-    //
-    ~sdsdkv(void) = delete;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

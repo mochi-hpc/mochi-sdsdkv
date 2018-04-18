@@ -21,19 +21,21 @@
 
 struct sdsdkv_mpi {
 private:
-    //
-    sdsdkv_mpi(void) = delete;
     // Dup of initializing communicator.
     MPI_Comm m_commchan = MPI_COMM_NULL;
 public:
     //
-    sdsdkv_mpi(
+    sdsdkv_mpi(void) = default;
+    //
+    int
+    init(
         MPI_Comm c_comm
     ) {
         int rc = MPI_Comm_dup(c_comm, &m_commchan);
         if (rc != MPI_SUCCESS) {
-            throw std::runtime_error("MPI_Comm_dup");
+            return SDSDKV_ERR_MPI;
         }
+        return SDSDKV_SUCCESS;
     }
     //
     ~sdsdkv_mpi(void)
