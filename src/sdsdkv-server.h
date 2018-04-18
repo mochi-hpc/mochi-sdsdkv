@@ -36,7 +36,7 @@ group_update_cb(
             printf("%d SSG update: ADD member %lu\n", world_id, update.member);
             break;
         case SSG_MEMBER_REMOVE:
-            printf("%d SSG update: ADD member %lu\n", world_id, update.member);
+            printf("%d SSG update: RM member %lu\n", world_id, update.member);
             break;
     }
 }
@@ -167,10 +167,16 @@ public:
             return rc;
         }
 #ifdef SDSDKV_SERVER_VERBOSE
-        hg_size_t gsize = ssg_get_group_size(m_gid);
-        std::string addr_str;
-        m_self_addr_to_string(addr_str);
-        printf("hi from server %s, size %lu\n", addr_str.c_str(), gsize);
+        {
+            std::string addr_str;
+            rc = m_self_addr_to_string(addr_str);
+            if (rc != SDSDKV_SUCCESS) return rc;
+            printf(
+                "SERVER(world_id=%d) %s\n",
+                m_mpi->get_world_id(),
+                addr_str.c_str()
+            );
+        }
 #endif
         margo_wait_for_finalize(m_mid);
         //

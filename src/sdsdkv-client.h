@@ -69,14 +69,18 @@ private:
     int
     m_db_init(void)
     {
-        char addr_str[s_addr_str_buff_size];
-        hg_size_t addr_str_sz = sizeof(addr_str);
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
             hg_addr_t server_addr = ssg_get_addr(m_gid, i);
-            margo_addr_to_string(m_mid, addr_str, &addr_str_sz, server_addr);
-            printf("CLIENT: %lu=%s\n", i, addr_str);
+            std::string addr_str;
+            int rc = m_addr_to_string(server_addr, addr_str);
+            if (rc != SDSDKV_SUCCESS) return rc;
+            printf(
+                "CLIENT(world_id=%d) %s\n",
+                m_mpi->get_world_id(),
+                addr_str.c_str()
+            );
         }
         //
         return SDSDKV_SUCCESS;
@@ -107,10 +111,6 @@ public:
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
-#ifdef SDSDKV_CLIENT_VERBOSE
-        hg_size_t gsize = ssg_get_group_size(m_gid);
-        printf("hi from client size %lu\n", gsize);
-#endif
         //
         return SDSDKV_SUCCESS;
     }
