@@ -13,7 +13,6 @@
 #pragma once
 
 #include "sdsdkv-config.h"
-
 #include "sdsdkv-mpi.h"
 
 #include "margo.h"
@@ -29,6 +28,43 @@ protected:
     margo_instance_id m_mid;
     /** SSG group ID. */
     ssg_group_id_t m_gid;
+    //
+    std::string m_margo_addr_str;
+    //
+    int
+    m_margo_set_addrs(void)
+    {
+        int rc = SDSDKV_SUCCESS;
+        char self_addr_str[128];
+        hg_size_t self_addr_str_sz = sizeof(self_addr_str);
+        //
+        hg_addr_t margo_addr;
+        hg_return_t hrc = margo_addr_self(m_mid, &margo_addr);
+        if (hrc != HG_SUCCESS) {
+            rc = SDSDKV_ERR_SERVICE;
+            goto err;
+        }
+        //
+        hrc = margo_addr_to_string(
+                  m_mid,
+                  self_addr_str,
+                  &self_addr_str_sz,
+                  margo_addr
+              );
+        if (hrc != HG_SUCCESS) {
+            rc = SDSDKV_ERR_SERVICE;
+            goto err;
+        }
+        m_margo_addr_str = std::string(self_addr_str);
+        //
+        margo_addr_free(m_mid, margo_addr);
+        //
+        return rc;
+    err:
+        margo_addr_free(m_mid, margo_addr);
+        margo_finalize(m_mid);
+        return rc;
+    }
 public:
     //
     personality(void)

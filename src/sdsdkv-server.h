@@ -48,10 +48,6 @@ private:
     //
     sdskv_database_id_t m_dbid;
     //
-    hg_addr_t m_margo_addr;
-    //
-    std::string m_margo_addr_str;
-    //
     int
     m_margo_init(void)
     {
@@ -104,38 +100,6 @@ private:
     }
     //
     int
-    m_margo_set_addrs(void)
-    {
-        int rc = SDSDKV_SUCCESS;
-        char self_addr_str[128];
-        hg_size_t self_addr_str_sz = sizeof(self_addr_str);
-        //
-        hg_return_t hrc = margo_addr_self(m_mid, &m_margo_addr);
-        if (hrc != HG_SUCCESS) {
-            rc = SDSDKV_ERR_SERVICE;
-            goto err;
-        }
-        //
-        hrc = margo_addr_to_string(
-                  m_mid,
-                  self_addr_str,
-                  &self_addr_str_sz,
-                  m_margo_addr
-              );
-        if (hrc != HG_SUCCESS) {
-            rc = SDSDKV_ERR_SERVICE;
-            goto err;
-        }
-        m_margo_addr_str = std::string(self_addr_str);
-        //
-        return rc;
-err:
-        margo_addr_free(m_mid, m_margo_addr);
-        margo_finalize(m_mid);
-        return rc;
-    }
-    //
-    int
     m_keyval_register_provider(void)
     {
         int rc = sdskv_provider_register(
@@ -177,7 +141,6 @@ public:
     virtual
     ~sdsdkv_server(void)
     {
-        margo_addr_free(m_mid, m_margo_addr);
         margo_finalize(m_mid);
     }
     //

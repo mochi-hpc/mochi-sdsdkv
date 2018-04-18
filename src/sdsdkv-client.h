@@ -33,11 +33,11 @@ private:
         static const int rpc_thread_count = -1;
         //
         m_mid = margo_init(
-                       m_config->comm_protocol.c_str(),
-                       MARGO_CLIENT_MODE,
-                       use_progress_thread,
-                       rpc_thread_count
-                   );
+                    m_config->comm_protocol.c_str(),
+                    MARGO_CLIENT_MODE,
+                    use_progress_thread,
+                    rpc_thread_count
+                );
         if (m_mid == MARGO_INSTANCE_NULL) {
             return SDSDKV_ERR_SERVICE;
         }
@@ -50,6 +50,7 @@ private:
         //
         return SDSDKV_SUCCESS;
     }
+    //
     int
     m_ssg_init(void)
     {
@@ -60,6 +61,24 @@ private:
         rc = ssg_group_attach(m_gid);
         if (rc != SSG_SUCCESS) {
             return SDSDKV_ERR_SERVICE;
+        }
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
+    m_db_init(void)
+    {
+        // TODO(skg) No magic constants.
+        char addr_str[128];
+        hg_size_t addr_str_sz = sizeof(addr_str);
+        //
+        hg_size_t gsize = ssg_get_group_size(m_gid);
+
+        for (decltype(gsize) i = 0; i < gsize; ++i) {
+            hg_addr_t server_addr = ssg_get_addr(m_gid, i);
+            margo_addr_to_string(m_mid, addr_str, &addr_str_sz, server_addr);
+            printf("CLIENT: %lu=%s\n", i, addr_str);
         }
         //
         return SDSDKV_SUCCESS;
@@ -83,6 +102,10 @@ public:
             return rc;
         }
         rc = m_ssg_init();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        rc = m_db_init();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
