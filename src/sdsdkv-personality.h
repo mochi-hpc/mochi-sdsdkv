@@ -24,10 +24,9 @@ protected:
     margo_instance_id m_mid;
 public:
     //
-    personality(
-        void
-    ) : m_config(nullptr)
-      , m_mid(MARGO_INSTANCE_NULL) { }
+    personality(void)
+        : m_config(nullptr)
+        , m_mid(MARGO_INSTANCE_NULL) { }
     //
     virtual
     ~personality(void)

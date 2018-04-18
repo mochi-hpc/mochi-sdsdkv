@@ -33,11 +33,10 @@ class sdsdkv_impl {
     //
 public:
     //
-    sdsdkv_impl(
-        void
-    ) : m_personality(nullptr)
-      , m_mpi(nullptr)
-      , m_config(nullptr) { }
+    sdsdkv_impl(void)
+        : m_personality(nullptr)
+        , m_mpi(nullptr)
+        , m_config(nullptr) { }
     //
     ~sdsdkv_impl(void)
     {
