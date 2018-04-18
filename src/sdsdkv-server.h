@@ -210,9 +210,10 @@ public:
             return rc;
         }
 #ifdef SDSDKV_SERVER_VERBOSE
-        printf("hi from server %s\n", m_margo_addr_str.c_str());
+        hg_size_t gsize = ssg_get_group_size(m_gid);
+        printf("hi from server %s, size %lu\n", m_margo_addr_str.c_str(), gsize);
 #endif
-        //margo_wait_for_finalize(m_mid);
+        margo_wait_for_finalize(m_mid);
         //
         return SDSDKV_SUCCESS;
     }

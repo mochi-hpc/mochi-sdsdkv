@@ -57,6 +57,10 @@ private:
         if (rc != SSG_SUCCESS) {
             return SDSDKV_ERR_SERVICE;
         }
+        rc = ssg_group_attach(m_gid);
+        if (rc != SSG_SUCCESS) {
+            return SDSDKV_ERR_SERVICE;
+        }
         //
         return SDSDKV_SUCCESS;
     }
@@ -78,8 +82,13 @@ public:
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
+        rc = m_ssg_init();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
 #ifdef SDSDKV_CLIENT_VERBOSE
-        printf("hi from client\n");
+        hg_size_t gsize = ssg_get_group_size(m_gid);
+        printf("hi from client size %lu\n", gsize);
 #endif
         //
         return SDSDKV_SUCCESS;
