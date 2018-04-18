@@ -72,9 +72,8 @@ private:
         // TODO(skg) No magic constants.
         char addr_str[128];
         hg_size_t addr_str_sz = sizeof(addr_str);
-        //
         hg_size_t gsize = ssg_get_group_size(m_gid);
-
+        //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
             hg_addr_t server_addr = ssg_get_addr(m_gid, i);
             margo_addr_to_string(m_mid, addr_str, &addr_str_sz, server_addr);

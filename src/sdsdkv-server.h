@@ -87,7 +87,6 @@ private:
         int world_id = m_mpi->get_world_id();
         m_gid = ssg_group_create_mpi(
                     m_config->group_name.c_str(),
-                    // TODO(skg) is this correct?
                     m_mpi->get_peronality_comm(),
                     &group_update_cb,
                     &world_id
