@@ -95,22 +95,16 @@ public:
     int
     open(void) {
         int rc = m_margo_init();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = xchange_gid();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
+        //
         rc = m_ssg_init();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
+        //
         rc = m_db_init();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         return SDSDKV_SUCCESS;
     }
@@ -118,7 +112,7 @@ public:
     int
     xchange_gid(void)
     {
-        char *gid_bits = NULL;
+        char *gid_bits = nullptr;
         unsigned long gid_size_ul = 0;
         //
         const int root = m_mpi->get_server_delegate_world_id();
@@ -147,7 +141,7 @@ public:
         //
         ssg_group_id_deserialize(gid_bits, gid_size_ul, &m_gid);
     out:
-        free(gid_bits);
+        if (gid_bits) free(gid_bits);
         //
         return rc;
     }

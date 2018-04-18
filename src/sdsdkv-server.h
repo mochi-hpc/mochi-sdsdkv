@@ -103,6 +103,7 @@ private:
                      &m_provider
                  );
         if (rc != SDSKV_SUCCESS) {
+            // TODO(skg) Remove these. Caller should destroy instance on error.
             margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
@@ -143,29 +144,19 @@ public:
     {
         //
         int rc = m_margo_init();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_ssg_init();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = xchange_gid();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_keyval_register_provider();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_keyval_add_db();
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
 #ifdef SDSDKV_SERVER_VERBOSE
         {
             std::string addr_str;
@@ -186,7 +177,7 @@ public:
     int
     xchange_gid(void)
     {
-        char *gid_bits = NULL;
+        char *gid_bits = nullptr;
         size_t gid_size = 0;
         //
         ssg_group_id_serialize(m_gid, &gid_bits, &gid_size);
@@ -216,7 +207,7 @@ public:
              );
         if (rc != SDSDKV_SUCCESS) goto out;
     out:
-        free(gid_bits);
+        if (gid_bits) free(gid_bits);
         //
         return rc;
     }
