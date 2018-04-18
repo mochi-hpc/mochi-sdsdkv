@@ -74,7 +74,7 @@ public:
             return rc;
         }
         //
-        rc = xchange_addrs();
+        rc = xchange_gid();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
@@ -86,9 +86,40 @@ public:
     }
     //
     int
-    xchange_addrs(void)
+    xchange_gid(void)
     {
-        return SDSDKV_SUCCESS;
+        char *gid_bits = NULL;
+        unsigned long gid_size_ul = 0;
+        //
+        const int root = m_mpi->get_server_delegate_world_id();
+        int rc = SDSDKV_SUCCESS;
+        // Get size.
+        rc = m_mpi->bcast(
+                 &gid_size_ul,
+                 1,
+                 MPI_UNSIGNED_LONG,
+                 root,
+                 m_mpi->get_world_comm()
+             );
+        if (rc != SDSDKV_SUCCESS) goto out;
+        //
+        gid_bits = (char *)calloc(gid_size_ul, sizeof(*gid_bits));
+        if (!gid_bits) return SDSDKV_ERR_OOR;
+        // Get data.
+        rc = m_mpi->bcast(
+                 gid_bits,
+                 gid_size_ul,
+                 MPI_BYTE,
+                 root,
+                 m_mpi->get_world_comm()
+             );
+        if (rc != SDSDKV_SUCCESS) goto out;
+        //
+        ssg_group_id_deserialize(gid_bits, gid_size_ul, &m_gid);
+    out:
+        free(gid_bits);
+        //
+        return rc;
     }
 };
 

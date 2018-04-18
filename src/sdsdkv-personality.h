@@ -55,10 +55,10 @@ public:
     }
     //
     virtual int
-    open(void) = 0;
+    xchange_gid(void) = 0;
     //
     virtual int
-    xchange_addrs(void) = 0;
+    open(void) = 0;
 };
 
 /*
