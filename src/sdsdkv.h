@@ -93,6 +93,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_hashing hash_be;
     /** Database type. */
     sdsdkv_config_db db_type;
+    /** Group name. */
+    char *group_name;
     /** Database name. */
     char *db_name;
     /** Communication protocol. */

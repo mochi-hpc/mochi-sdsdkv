@@ -61,6 +61,8 @@ public:
     //
     sdsdkv_config_db db_type;
     //
+    std::string group_name;
+    //
     std::string db_name;
     //
     std::string comm_protocol;
@@ -73,6 +75,8 @@ public:
     init(
         const sdsdkv_config &config
     ) {
+        using namespace std;
+
         if (!valid(config)) {
             return SDSDKV_ERR_INVLD_CONFIG;
         }
@@ -81,8 +85,9 @@ public:
         personality = config.personality;
         hash_be = config.hash_be;
         db_type = config.db_type;
-        db_name = std::string(config.db_name);
-        comm_protocol = std::string(config.comm_protocol);
+        group_name = string(config.group_name);
+        db_name = string(config.db_name);
+        comm_protocol = string(config.comm_protocol);
         //
         return SDSDKV_SUCCESS;
     }

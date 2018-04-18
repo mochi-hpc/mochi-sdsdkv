@@ -41,6 +41,8 @@ main(int argc, char **argv)
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */
         SDSDKV_DB_MAP,
+        /* .group_name = */
+        (char *)"test-group",
         /* .db_name = */
         (char *)"db/test",
         /* .comm_protocol */

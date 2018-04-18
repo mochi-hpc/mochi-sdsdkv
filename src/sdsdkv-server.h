@@ -16,11 +16,30 @@
 #include "sdsdkv-config.h"
 
 #include "margo.h"
+#include "ssg.h"
+#include "ssg-mpi.h"
 #include "sdskv-server.h"
 
 #include <string>
 
 #define SDSDKV_SERVER_VERBOSE
+
+static void
+group_update_cb(
+    ssg_membership_update_t update,
+    void *cb_dat
+) {
+    int world_id = *(int *)cb_dat;
+
+    switch (update.type) {
+        case SSG_MEMBER_ADD:
+            printf("%d SSG update: ADD member %lu\n", world_id, update.member);
+            break;
+        case SSG_MEMBER_REMOVE:
+            printf("%d SSG update: ADD member %lu\n", world_id, update.member);
+            break;
+    }
+}
 
 struct sdsdkv_server : public personality {
 private:
@@ -29,7 +48,9 @@ private:
     //
     sdskv_database_id_t m_dbid;
     //
-    std::string m_margo_addr;
+    hg_addr_t m_margo_addr;
+    //
+    std::string m_margo_addr_str;
     //
     int
     m_margo_init(void)
@@ -60,15 +81,36 @@ private:
     }
     //
     int
+    m_ssg_init(void)
+    {
+        int rc = ssg_init(m_mid);
+        if (rc != SSG_SUCCESS) {
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        int world_id = m_mpi->get_world_id();
+		m_gid = ssg_group_create_mpi(
+                    m_config->group_name.c_str(),
+                    // TODO(skg) is this correct?
+                    m_mpi->get_peronality_comm(),
+                    &group_update_cb,
+                    &world_id
+                );
+        if (m_gid == SSG_GROUP_ID_NULL) {
+            return SDSDKV_ERR_SERVICE;
+        }
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
     m_margo_set_addr(void)
     {
         int rc = SDSDKV_SUCCESS;
-        // Get server info. TODO(skg) Need to share via MPI?
-        hg_addr_t self_addr;
         char self_addr_str[128];
         hg_size_t self_addr_str_sz = sizeof(self_addr_str);
         //
-        hg_return_t hrc = margo_addr_self(m_mid, &self_addr);
+        hg_return_t hrc = margo_addr_self(m_mid, &m_margo_addr);
         if (hrc != HG_SUCCESS) {
             rc = SDSDKV_ERR_SERVICE;
             goto err;
@@ -78,19 +120,17 @@ private:
                   m_mid,
                   self_addr_str,
                   &self_addr_str_sz,
-                  self_addr
+                  m_margo_addr
               );
         if (hrc != HG_SUCCESS) {
             rc = SDSDKV_ERR_SERVICE;
             goto err;
         }
-        // No longer needed.
-        margo_addr_free(m_mid, self_addr);
-        m_margo_addr = std::string(self_addr_str);
+        m_margo_addr_str = std::string(self_addr_str);
         //
         return rc;
 err:
-        margo_addr_free(m_mid, self_addr);
+        margo_addr_free(m_mid, m_margo_addr);
         margo_finalize(m_mid);
         return rc;
     }
@@ -135,13 +175,22 @@ public:
     sdsdkv_server(void) = default;
     //
     virtual
-    ~sdsdkv_server(void) = default;
+    ~sdsdkv_server(void)
+    {
+        margo_addr_free(m_mid, m_margo_addr);
+        margo_finalize(m_mid);
+    }
     //
     int
     open(void)
     {
         //
         int rc = m_margo_init();
+        if (rc != SDSDKV_SUCCESS) {
+            return rc;
+        }
+        //
+        rc = m_ssg_init();
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
@@ -161,7 +210,7 @@ public:
             return rc;
         }
 #ifdef SDSDKV_SERVER_VERBOSE
-        printf("hi from server %s\n", m_margo_addr.c_str());
+        printf("hi from server %s\n", m_margo_addr_str.c_str());
 #endif
         //margo_wait_for_finalize(m_mid);
         //

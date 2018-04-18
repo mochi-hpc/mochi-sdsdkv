@@ -55,13 +55,13 @@ public:
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
-        // Initialize MPI infrastructure.
+        // Create and initialize MPI infrastructure.
         m_mpi = new sdsdkv_mpi();
-        rc = m_mpi->init(config.init_comm);
+        rc = m_mpi->init(*m_config);
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
-        // Create personality instance based on configury.
+        // Create and initialize personality instance based on configury.
         rc = personality_factory::create(
                  m_config->personality,
                  &m_personality
@@ -69,7 +69,7 @@ public:
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
-        rc = m_personality->init(config);
+        rc = m_personality->init(m_mpi, config);
         if (rc != SDSDKV_SUCCESS) {
             return rc;
         }
