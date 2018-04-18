@@ -81,6 +81,7 @@ private:
         return SDSDKV_SUCCESS;
     }
     // TODO(skg) Add ability to change placement implementation.
+    // Trivial change.
     int
     m_placement_init(void)
     {
