@@ -103,8 +103,6 @@ private:
                      &m_provider
                  );
         if (rc != SDSKV_SUCCESS) {
-            // TODO(skg) Remove these. Caller should destroy instance on error.
-            margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
         //
@@ -122,7 +120,6 @@ private:
                      &m_dbid
                  );
         if (rc != SDSKV_SUCCESS) {
-            margo_finalize(m_mid);
             return SDSDKV_ERR_SERVICE;
         }
         //
@@ -136,7 +133,8 @@ public:
     virtual
     ~sdsdkv_server(void)
     {
-        margo_finalize(m_mid);
+        // TODO(skg) should be in finalize.
+        //margo_finalize(m_mid);
     }
     //
     int

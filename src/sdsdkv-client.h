@@ -38,15 +38,10 @@ private:
                     use_progress_thread,
                     rpc_thread_count
                 );
-        if (m_mid == MARGO_INSTANCE_NULL) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (m_mid == MARGO_INSTANCE_NULL) return SDSDKV_ERR_SERVICE;
         //
         int erc = sdskv_client_init(m_mid, &m_kvcl);
-        if(erc != SDSKV_SUCCESS) {
-            margo_finalize(m_mid);
-            return SDSDKV_ERR_SERVICE;
-        }
+        if(erc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
     }
@@ -55,13 +50,10 @@ private:
     m_ssg_init(void)
     {
         int rc = ssg_init(m_mid);
-        if (rc != SSG_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        //
         rc = ssg_group_attach(m_gid);
-        if (rc != SSG_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
     }
@@ -90,7 +82,11 @@ public:
     sdsdkv_client(void) = default;
     //
     virtual
-    ~sdsdkv_client(void) = default;
+    ~sdsdkv_client(void)
+    {
+        // TODO(skg) should be in finalize.
+        //margo_finalize(m_mid);
+    }
     //
     int
     open(void) {
