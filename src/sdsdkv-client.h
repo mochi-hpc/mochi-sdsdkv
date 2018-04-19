@@ -76,8 +76,9 @@ private:
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
-            // TODO(skg) add check.
-            hg_addr_t server_addr = ssg_get_addr(m_gid, i);
+            const hg_addr_t server_addr = ssg_get_addr(m_gid, i);
+            if (server_addr == HG_ADDR_NULL) return SDSDKV_ERR_SERVICE;
+            //
             std::string addr_str = m_addr_to_string(server_addr);
             printf(
                 "CLIENT(world_id=%d) %s\n",

@@ -30,11 +30,11 @@ sdskv2irc(int rc)
         case (SDSKV_ERR_DB_CREATE):   return SDSDKV_ERR_DB_CREATE;
         case (SDSKV_ERR_DB_NAME):     return SDSDKV_ERR_DB_NAME;
         case (SDSKV_ERR_UNKNOWN_DB):  return SDSDKV_ERR_DB_UNKNOWN;
-        case (SDSKV_ERR_UNKNOWN_PR):  return SDSDKV_ERR_DB_UNKNOWN;
+        case (SDSKV_ERR_UNKNOWN_PR):  return SDSDKV_ERR_PR_UNKNOWN;
         case (SDSKV_ERR_PUT):         return SDSDKV_ERR_PUT;
         case (SDSKV_ERR_UNKNOWN_KEY): return SDSDKV_ERR_UNKNOWN_KEY;
         case (SDSKV_ERR_SIZE):        return SDSDKV_ERR_SIZE;
-        case (SDSKV_ERR_ERASE):       return SDSDKV_ERR_SIZE;
+        case (SDSKV_ERR_ERASE):       return SDSDKV_ERR_ERASE;
     }
     return SDSDKV_ERR_INVLD_ARG;
 }

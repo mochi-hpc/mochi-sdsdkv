@@ -42,6 +42,8 @@ enum {
     SDSDKV_ERR_DB_NAME,
     /** Database unknown error. */
     SDSDKV_ERR_DB_UNKNOWN,
+    /** ??? */
+    SDSDKV_ERR_PR_UNKNOWN,
     /** Put error. */
     SDSDKV_ERR_PUT,
     /** Unknown key error. */

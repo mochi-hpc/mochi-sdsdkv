@@ -76,9 +76,7 @@ private:
     m_ssg_init(void)
     {
         int rc = ssg_init(m_mid);
-        if (rc != SSG_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         int world_id = m_mpi->get_world_id();
         m_gid = ssg_group_create_mpi(
@@ -87,9 +85,7 @@ private:
                     &group_update_cb,
                     &world_id
                 );
-        if (m_gid == SSG_GROUP_ID_NULL) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (m_gid == SSG_GROUP_ID_NULL) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
     }
