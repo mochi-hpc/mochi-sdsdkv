@@ -93,9 +93,11 @@ private:
     int
     m_keyval_register_provider(void)
     {
+        const int pid = m_mpi->get_pgroup_id();
+        //
         int rc = sdskv_provider_register(
                      m_mid,
-                     1,
+                     pid + 1,
                      SDSKV_ABT_POOL_DEFAULT,
                      &m_provider
                  );

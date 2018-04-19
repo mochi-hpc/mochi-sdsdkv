@@ -90,7 +90,7 @@ private:
             int rc = sdskv_provider_handle_create(
                           m_kvcl,
                           server_addr,
-                          1,
+                          i + 1,
                           &kvph
                       );
             if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
