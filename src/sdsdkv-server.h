@@ -157,9 +157,7 @@ public:
         if (rc != SDSDKV_SUCCESS) return rc;
 #ifdef SDSDKV_SERVER_VERBOSE
         {
-            std::string addr_str;
-            rc = m_self_addr_to_string(addr_str);
-            if (rc != SDSDKV_SUCCESS) return rc;
+            std::string addr_str = m_self_addr_to_string();
             printf(
                 "SERVER(world_id=%d) %s\n",
                 m_mpi->get_world_id(),

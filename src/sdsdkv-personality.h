@@ -31,13 +31,13 @@ protected:
     /** SSG group ID. */
     ssg_group_id_t m_gid;
     //
-    int
+    std::string
     m_addr_to_string(
-        hg_addr_t target,
-        std::string &result
+        hg_addr_t target
     ) {
         char addr_str[s_addr_str_buff_size];
         hg_size_t addr_str_sz = sizeof(addr_str);
+        std::string result;
         //
         hg_return_t hrc = margo_addr_to_string(
                               m_mid,
@@ -45,27 +45,27 @@ protected:
                               &addr_str_sz,
                               target
                           );
-        if (hrc != HG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        if (hrc != HG_SUCCESS) return result;
         //
         result = std::string(addr_str);
         //
-        return SDSDKV_SUCCESS;
+        return result;
     }
-    int
-    m_self_addr_to_string(
-        std::string &result
-    ) {
+    //
+    std::string
+    m_self_addr_to_string(void)
+    {
         hg_addr_t self_addr;
         //
         hg_return_t hrc = margo_addr_self(m_mid, &self_addr);
         if (hrc != HG_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
+            return std::string();
         }
-        int rc = m_addr_to_string(self_addr, result);
+        std::string result(m_addr_to_string(self_addr));
         //
         margo_addr_free(m_mid, self_addr);
         //
-        return rc;
+        return result;
     }
 public:
     //

@@ -68,25 +68,40 @@ private:
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
             hg_addr_t server_addr = ssg_get_addr(m_gid, i);
-            std::string addr_str;
-            int rc = m_addr_to_string(server_addr, addr_str);
-            if (rc != SDSDKV_SUCCESS) return rc;
+            std::string addr_str = m_addr_to_string(server_addr);
             printf(
                 "CLIENT(world_id=%d) %s\n",
                 m_mpi->get_world_id(),
                 addr_str.c_str()
             );
+            //
+            sdskv_provider_handle_t kvph;
+            int rc = sdskv_provider_handle_create(
+                          m_kvcl,
+                          server_addr,
+                          1,
+                          &kvph
+                      );
+            if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            //
+            sdskv_database_id_t db_id;
+            rc = sdskv_open(kvph, m_config->db_name.c_str(), &db_id);
+            if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            printf(
+                "CLIENT(world_id=%d) DB_OPEN!\n",
+                m_mpi->get_world_id()
+            );
+
         }
         //
         return SDSDKV_SUCCESS;
     }
     // TODO(skg) Add ability to change placement implementation.
-    // Trivial change.
     int
     m_placement_init(void)
     {
         hg_size_t gsize = ssg_get_group_size(m_gid);
-        //
+        // TODO(skg) Understand what this means.
         static const int virt_factor = 4;
         static const int seed = 0;
         m_place = ch_placement_initialize(
@@ -101,8 +116,7 @@ private:
     }
 public:
     //
-    sdsdkv_client(void)
-        : m_place(nullptr) { }
+    sdsdkv_client(void) : m_place(nullptr) { }
     //
     virtual
     ~sdsdkv_client(void)
