@@ -123,6 +123,16 @@ err:
     get_server_delegate_world_id(void) { return m_server_delegate_world_id; }
     //
     int
+    barrier(
+        MPI_Comm comm
+    ) {
+        int rc = MPI_Barrier(comm);
+        if (rc != MPI_SUCCESS) return SDSDKV_ERR_MPI;
+        //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
     bcast(
         void *buffer,
         int count,

@@ -32,6 +32,8 @@ private:
     //
     struct ch_placement_instance *m_place;
     //
+    std::vector<hg_addr_t> m_server_addrs;
+    //
     std::vector<
         std::pair<sdskv_provider_handle_t, sdskv_database_id_t>
     > m_ph_dbs;
@@ -76,8 +78,9 @@ private:
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
-            const hg_addr_t server_addr = ssg_get_addr(m_gid, i);
+            hg_addr_t server_addr = ssg_get_addr(m_gid, i);
             if (server_addr == HG_ADDR_NULL) return SDSDKV_ERR_SERVICE;
+            m_server_addrs.push_back(server_addr);
             //
             std::string addr_str = m_addr_to_string(server_addr);
             printf(
@@ -92,7 +95,7 @@ private:
                           server_addr,
                           i + 1,
                           &kvph
-                      );
+                     );
             if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             //
             sdskv_database_id_t db_id;
@@ -181,6 +184,26 @@ public:
     int
     close(void)
     {
+        const int pgid = m_mpi->get_pgroup_id();
+        // Elect one process to shutdown all active servers.
+        if (pgid == 0) {
+            for (auto &sa : m_server_addrs) {
+                const int rc = sdskv_shutdown_service(m_kvcl, sa);
+                if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
+            }
+        }
+        int rc = m_mpi->barrier(m_mpi->get_peronality_comm());
+        if (rc != SDSDKV_ERR_MPI) return rc;
+        //
+        for (auto &t : m_ph_dbs) {
+            sdskv_provider_handle_release(t.first);
+        }
+        for (auto &sa : m_server_addrs) {
+            margo_addr_free(m_mid, sa);
+        }
+        sdskv_client_finalize(m_kvcl);
+        margo_finalize(m_mid);
+        //
         return SDSDKV_SUCCESS;
     }
     //
