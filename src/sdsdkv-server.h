@@ -164,6 +164,9 @@ public:
         );
 #endif
         //
+        ssg_group_destroy(m_gid);
+        ssg_finalize();
+        //
         return SDSDKV_SUCCESS;
     }
     int

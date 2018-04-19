@@ -198,6 +198,10 @@ public:
             margo_addr_free(m_mid, sa);
         }
         sdskv_client_finalize(m_kvcl);
+        //
+        ssg_group_destroy(m_gid);
+        ssg_finalize();
+        //
         margo_finalize(m_mid);
         //
         return SDSDKV_SUCCESS;
