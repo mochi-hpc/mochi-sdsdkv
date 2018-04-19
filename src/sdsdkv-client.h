@@ -18,6 +18,10 @@
 #include "sdskv-client.h"
 #include "ch-placement.h"
 
+#include <iostream> // TODO(skg) Not really needed. Just for debug.
+#include <vector>
+#include <utility>
+
 #define SDSDKV_CLIENT_VERBOSE
 
 struct sdsdkv_client : public personality {
@@ -26,6 +30,10 @@ private:
     sdskv_client_t m_kvcl;
     //
     struct ch_placement_instance *m_place;
+    //
+    std::vector<
+        std::pair<sdskv_provider_handle_t, sdskv_database_id_t>
+    > m_ph_dbs;
     //
     int
     m_margo_init(void)
@@ -74,7 +82,7 @@ private:
                 m_mpi->get_world_id(),
                 addr_str.c_str()
             );
-            //
+            // TODO(skg) Do I need to do this for each one? Is one sufficient?
             sdskv_provider_handle_t kvph;
             int rc = sdskv_provider_handle_create(
                           m_kvcl,
@@ -87,6 +95,8 @@ private:
             sdskv_database_id_t db_id;
             rc = sdskv_open(kvph, m_config->db_name.c_str(), &db_id);
             if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            //
+            m_ph_dbs.push_back(std::make_pair(kvph, db_id));
             //
             printf(
                 "CLIENT(world_id=%d) DB_OPEN!\n",
@@ -189,6 +199,25 @@ public:
         const void *value,
         uint64_t value_size
     ) {
+        // TODO(skg) ???
+        static unsigned long server_indices[CH_MAX_REPLICATION];
+        static const unsigned int replication = 1;
+        //
+        ch_placement_find_closest(
+            m_place,
+            // TODO(skg) How to properly handle arbitrary data?
+            *(uint64_t *)(key),
+            replication,
+            server_indices
+        );
+        // Stash info needed for put.
+        const auto ph_db = m_ph_dbs[server_indices[0]];
+        const auto provider = ph_db.first;
+        const auto db = ph_db.second;
+        // Actually do the put.
+        int rc = sdskv_put(provider, db, key, key_size, value, value_size);
+        if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
+        //
         return SDSDKV_SUCCESS;
     }
 };

@@ -58,10 +58,11 @@ main(int argc, char **argv)
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
         int rc = SDSDKV_SUCCESS;
         for (int i = 0; i < 2; ++i) {
+            int key = i + rank;
             int value = i + 1;
             rc = sdsdkv_put(
                      dkvc,
-                     (const void *)&i,
+                     (const void *)&key,
                      sizeof(int),
                      (const void *)&value,
                      sizeof(int)
