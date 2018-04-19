@@ -59,7 +59,7 @@ main(int argc, char **argv)
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
         int rc = SDSDKV_SUCCESS;
         for (int i = 0; i < 2; ++i) {
-            int key = i + rank;
+            uint64_t key = i + rank;
             int value = key + 1;
             rc = sdsdkv_put(
                      dkvc,
@@ -70,20 +70,27 @@ main(int argc, char **argv)
                  );
             if (rc != SDSDKV_SUCCESS) abort_job();
         }
-        //
-        for (int i = 0; i < 2; ++i) {
-            int key = i + rank;
-            int value = -1;
-            uint64_t value_size = sizeof(int);
-            rc = sdsdkv_get(
-                     dkvc,
-                     (const void *)&key,
-                     sizeof(int),
-                     &value,
-                     &value_size
-                 );
-            if (rc != SDSDKV_SUCCESS) abort_job();
-            printf("rank=%d (key=%d, val=%d)\n", rank, key, value);
+    }
+    sleep(2);
+    if (rank == 0) {
+        int rc;
+        int ranks[2] = {0, 2};
+        for (int r = 0; r < 2; ++r) {
+            //
+            for (int i = 0; i < 2; ++i) {
+                uint64_t key = i + ranks[r];
+                int value = -1;
+                uint64_t value_size = sizeof(int);
+                rc = sdsdkv_get(
+                         dkvc,
+                         (const void *)&key,
+                         sizeof(int),
+                         &value,
+                         &value_size
+                     );
+                if (rc != SDSDKV_SUCCESS) abort_job();
+                printf("rank=%d (key=%lu, val=%d)\n", ranks[r], key, value);
+            }
         }
     }
     //

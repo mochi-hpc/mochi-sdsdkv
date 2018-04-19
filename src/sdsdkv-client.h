@@ -212,6 +212,7 @@ public:
             server_indices
         );
         // Stash info needed for put.
+        printf("put --> %lu\n", server_indices[0]);
         const auto ph_db = m_ph_dbs[server_indices[0]];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
@@ -242,6 +243,7 @@ public:
             server_indices
         );
         // Stash info needed for put.
+        printf("get --> %lu\n", server_indices[0]);
         const auto ph_db = m_ph_dbs[server_indices[0]];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
