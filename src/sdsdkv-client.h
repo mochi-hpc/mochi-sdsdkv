@@ -124,6 +124,24 @@ private:
         //
         return SDSDKV_SUCCESS;
     }
+    //
+    unsigned long
+    m_placement_find_closest(
+        const void *key
+    ) {
+        static unsigned long server_indices[CH_MAX_REPLICATION];
+        // TODO(skg) ???
+        static const unsigned int replication = 1;
+        //
+        ch_placement_find_closest(
+            m_place,
+            // TODO(skg) How to properly handle arbitrary data?
+            *(uint64_t *)(key),
+            replication,
+            server_indices
+        );
+        return server_indices[0];
+    }
 public:
     //
     sdsdkv_client(void) : m_place(nullptr) { }
@@ -199,24 +217,15 @@ public:
         const void *value,
         uint64_t value_size
     ) {
-        // TODO(skg) ???
-        static unsigned long server_indices[CH_MAX_REPLICATION];
-        // TODO(skg) ???
-        static const unsigned int replication = 1;
-        //
-        ch_placement_find_closest(
-            m_place,
-            // TODO(skg) How to properly handle arbitrary data?
-            *(uint64_t *)(key),
-            replication,
-            server_indices
-        );
+        // Get ID for target server.
+        const unsigned long sid = m_placement_find_closest(key);
         // Stash info needed for put.
-        printf("put --> %lu\n", server_indices[0]);
-        const auto ph_db = m_ph_dbs[server_indices[0]];
+        printf("put --> serverid=%lu\n", sid);
+        const auto ph_db = m_ph_dbs[sid];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
         // Actually do the put.
+        // TODO(skg) Capture return value and improve reporting to caller.
         int rc = sdskv_put(provider, db, key, key_size, value, value_size);
         if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
         //
@@ -230,26 +239,16 @@ public:
         void *value,
         uint64_t *value_size
     ) {
-        // TODO(skg) ???
-        static unsigned long server_indices[CH_MAX_REPLICATION];
-        // TODO(skg) ???
-        static const unsigned int replication = 1;
-        //
-        ch_placement_find_closest(
-            m_place,
-            // TODO(skg) How to properly handle arbitrary data?
-            *(uint64_t *)(key),
-            replication,
-            server_indices
-        );
+        // Get ID for target server.
+        const unsigned long sid = m_placement_find_closest(key);
         // Stash info needed for put.
-        printf("get --> %lu\n", server_indices[0]);
-        const auto ph_db = m_ph_dbs[server_indices[0]];
+        printf("get --> serverid=%lu\n", sid);
+        const auto ph_db = m_ph_dbs[sid];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
-        // Actually do the put.
+        // Actually do the get.
+        // TODO(skg) Capture return value and improve reporting to caller.
         int rc = sdskv_get(provider, db, key, key_size, value, value_size);
-        printf("rc=%d\n", rc);
         if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
         //
         return SDSDKV_SUCCESS;
