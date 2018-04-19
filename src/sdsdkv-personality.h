@@ -98,6 +98,14 @@ public:
     virtual int
     open(void) = 0;
     //
+    virtual int
+    put(
+        const void *key,
+        uint64_t key_size,
+        const void *value,
+        uint64_t value_size
+    ) = 0;
+    //
 #if 0 // TODO(skg)
     virtual int
     close(void) = 0;

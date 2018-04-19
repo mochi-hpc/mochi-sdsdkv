@@ -50,6 +50,18 @@ public:
     }
     //
     static int
+    put(
+        sdsdkv_context c,
+        const void *key,
+        uint64_t key_size,
+        const void *value,
+        uint64_t value_size
+    ) {
+        sdsdkv_impl *impl = (sdsdkv_impl *)c;
+        return impl->put(key, key_size, value, value_size);
+    }
+    //
+    static int
     destroy(
         sdsdkv_context *c
     ) {
@@ -77,14 +89,25 @@ sdsdkv_create(
 ) {
     return sdsdkv::create(c, config);
 }
-
+//
 int
 sdsdkv_open(
     sdsdkv_context c
 ) {
     return sdsdkv::open(c);
 }
-
+//
+int
+sdsdkv_put(
+    sdsdkv_context c,
+    const void *key,
+    uint64_t key_size,
+    const void *value,
+    uint64_t value_size
+) {
+    return sdsdkv::put(c, key, key_size, value, value_size);
+}
+//
 int
 sdsdkv_destroy(
     sdsdkv_context c

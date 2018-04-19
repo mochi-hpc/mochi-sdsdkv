@@ -82,6 +82,16 @@ public:
     {
         return m_personality->open();
     }
+    //
+    int
+    put(
+        const void *key,
+        uint64_t key_size,
+        const void *value,
+        uint64_t value_size
+    ) {
+        return m_personality->put(key, key_size, value, value_size);
+    }
 };
 
 /*

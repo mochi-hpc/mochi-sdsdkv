@@ -207,6 +207,16 @@ public:
         //
         return rc;
     }
+    //
+    int
+    put(
+        const void *,
+        uint64_t,
+        const void *,
+        uint64_t
+    ) {
+        return SDSDKV_ERR_NOT_SUPPORTED;
+    }
 };
 
 /*

@@ -48,13 +48,28 @@ main(int argc, char **argv)
         /* .comm_protocol */
         (char *)"tcp",
     };
-
+    //
     erc = sdsdkv_create(&dkvc, &dkv_config);
     if (erc != SDSDKV_SUCCESS) abort_job();
-
+    //
     erc = sdsdkv_open(dkvc);
     if (erc != SDSDKV_SUCCESS) abort_job();
-
+    //
+    if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
+        int rc = SDSDKV_SUCCESS;
+        for (int i = 0; i < 2; ++i) {
+            int value = i + 1;
+            rc = sdsdkv_put(
+                     dkvc,
+                     (const void *)&i,
+                     sizeof(int),
+                     (const void *)&value,
+                     sizeof(int)
+                );
+            if (rc != SDSDKV_SUCCESS) abort_job();
+        }
+    }
+    //
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) abort_job();
 

@@ -87,11 +87,11 @@ private:
             sdskv_database_id_t db_id;
             rc = sdskv_open(kvph, m_config->db_name.c_str(), &db_id);
             if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            //
             printf(
                 "CLIENT(world_id=%d) DB_OPEN!\n",
                 m_mpi->get_world_id()
             );
-
         }
         //
         return SDSDKV_SUCCESS;
@@ -180,6 +180,16 @@ public:
         if (gid_bits) free(gid_bits);
         //
         return rc;
+    }
+    //
+    int
+    put(
+        const void *key,
+        uint64_t key_size,
+        const void *value,
+        uint64_t value_size
+    ) {
+        return SDSDKV_SUCCESS;
     }
 };
 

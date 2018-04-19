@@ -14,6 +14,8 @@
 
 // For exported MPI types.
 #include "mpi.h"
+// For uint64_t.
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -116,6 +118,18 @@ sdsdkv_create(
 int
 sdsdkv_open(
     sdsdkv_context c
+);
+
+/**
+ *
+ */
+int
+sdsdkv_put(
+    sdsdkv_context c,
+    const void *key,
+    uint64_t key_size,
+    const void *value,
+    uint64_t value_size
 );
 
 /**
