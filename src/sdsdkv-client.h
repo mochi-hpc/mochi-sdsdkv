@@ -125,7 +125,7 @@ private:
         return SDSDKV_SUCCESS;
     }
     //
-    unsigned long
+    std::pair<sdskv_provider_handle_t, sdskv_database_id_t>
     m_placement_find_closest(
         const void *key
     ) {
@@ -140,7 +140,8 @@ private:
             replication,
             server_indices
         );
-        return server_indices[0];
+        //
+        return m_ph_dbs[server_indices[0]];
     }
 public:
     //
@@ -217,11 +218,9 @@ public:
         const void *value,
         uint64_t value_size
     ) {
-        // Get ID for target server.
-        const unsigned long sid = m_placement_find_closest(key);
+        // Get target server info.
+        const auto ph_db = m_placement_find_closest(key);
         // Stash info needed for put.
-        printf("put --> serverid=%lu\n", sid);
-        const auto ph_db = m_ph_dbs[sid];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
         // Actually do the put.
@@ -239,11 +238,9 @@ public:
         void *value,
         uint64_t *value_size
     ) {
-        // Get ID for target server.
-        const unsigned long sid = m_placement_find_closest(key);
+        // Get target server info.
+        const auto ph_db = m_placement_find_closest(key);
         // Stash info needed for put.
-        printf("get --> serverid=%lu\n", sid);
-        const auto ph_db = m_ph_dbs[sid];
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
         // Actually do the get.

@@ -13,7 +13,7 @@
 #include "sdsdkv.h"
 #include "sdsdkv-impl.h"
 
-/** Type definition. */
+/** Software Defined Storage Distributed Key/Value type. */
 class sdsdkv {
 public:
     //
@@ -28,7 +28,7 @@ public:
     ) {
         if (!c || !config) return SDSDKV_ERR_INVLD_ARG;
         //
-        *c = (sdsdkv_context)NULL;
+        *c = (sdsdkv_context)nullptr;
         //
         sdsdkv_impl *impl = new sdsdkv_impl();
         int rc = impl->init(*config);
