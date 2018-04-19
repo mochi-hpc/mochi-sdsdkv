@@ -14,6 +14,7 @@
 
 #include "sdsdkv-config.h"
 #include "sdsdkv-personality.h"
+#include "sdsdkv-misci.h"
 
 #include "sdskv-client.h"
 #include "ch-placement.h"
@@ -75,6 +76,7 @@ private:
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
+            // TODO(skg) add check.
             hg_addr_t server_addr = ssg_get_addr(m_gid, i);
             std::string addr_str = m_addr_to_string(server_addr);
             printf(
@@ -90,11 +92,11 @@ private:
                           1,
                           &kvph
                       );
-            if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             //
             sdskv_database_id_t db_id;
             rc = sdskv_open(kvph, m_config->db_name.c_str(), &db_id);
-            if (rc != SDSKV_SUCCESS) return SDSDKV_ERR_SERVICE;
+            if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             //
             m_ph_dbs.push_back(std::make_pair(kvph, db_id));
             //
@@ -224,13 +226,12 @@ public:
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
         // Actually do the put.
-        // TODO(skg) Capture return value and improve reporting to caller.
         int rc = sdskv_put(provider, db, key, key_size, value, value_size);
-        if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
+        if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
         //
         return SDSDKV_SUCCESS;
     }
-    // TODO(skg) abstract find_closest
+    //
     int
     get(
         const void *key,
@@ -244,9 +245,8 @@ public:
         const auto provider = ph_db.first;
         const auto db = ph_db.second;
         // Actually do the get.
-        // TODO(skg) Capture return value and improve reporting to caller.
         int rc = sdskv_get(provider, db, key, key_size, value, value_size);
-        if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
+        if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
         //
         return SDSDKV_SUCCESS;
     }

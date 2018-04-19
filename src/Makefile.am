@@ -15,6 +15,7 @@ include_HEADERS = \
 sdsdkv.h
 
 libsdsdkv_la_SOURCES = \
+sdsdkv-misci.h \
 sdsdkv-config.h \
 sdsdkv-mpi.h \
 sdsdkv-personality.h \

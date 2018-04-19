@@ -36,6 +36,20 @@ enum {
     SDSDKV_ERR,
     /** System error. */
     SDSDKV_ERR_SYS,
+    /** Database create error. */
+    SDSDKV_ERR_DB_CREATE,
+    /** Database name error. */
+    SDSDKV_ERR_DB_NAME,
+    /** Database unknown error. */
+    SDSDKV_ERR_DB_UNKNOWN,
+    /** Put error. */
+    SDSDKV_ERR_PUT,
+    /** Unknown key error. */
+    SDSDKV_ERR_UNKNOWN_KEY,
+    /** Size error. */
+    SDSDKV_ERR_SIZE,
+    /** Erase error. */
+    SDSDKV_ERR_ERASE,
     /** Service error. */
     SDSDKV_ERR_SERVICE,
     /** Out of resources error. */

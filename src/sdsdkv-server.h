@@ -14,6 +14,7 @@
 
 #include "sdsdkv-personality.h"
 #include "sdsdkv-config.h"
+#include "sdsdkv-misci.h"
 
 #include "margo.h"
 #include "ssg.h"
@@ -102,9 +103,7 @@ private:
                      SDSKV_ABT_POOL_DEFAULT,
                      &m_provider
                  );
-        if (rc != SDSKV_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
         //
         return SDSDKV_SUCCESS;
     }
@@ -119,9 +118,7 @@ private:
                      NULL /* sdskv_compare_fn comp_fn */,
                      &m_dbid
                  );
-        if (rc != SDSKV_SUCCESS) {
-            return SDSDKV_ERR_SERVICE;
-        }
+        if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
         //
         return SDSDKV_SUCCESS;
     }
