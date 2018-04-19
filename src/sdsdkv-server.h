@@ -126,11 +126,7 @@ public:
     sdsdkv_server(void) = default;
     //
     virtual
-    ~sdsdkv_server(void)
-    {
-        // TODO(skg) should be in finalize.
-        //margo_finalize(m_mid);
-    }
+    ~sdsdkv_server(void) = default;
     //
     int
     open(void)
@@ -161,12 +157,19 @@ public:
         }
 #endif
         margo_wait_for_finalize(m_mid);
+#ifdef SDSDKV_SERVER_VERBOSE
+        printf(
+            "SERVER WAIT FOR FINALIZE COMPLETE (world_id=%d)\n",
+            m_mpi->get_world_id()
+        );
+#endif
         //
         return SDSDKV_SUCCESS;
     }
     int
     close(void)
     {
+        //margo_finalize(m_mid);
         return SDSDKV_SUCCESS;
     }
     //

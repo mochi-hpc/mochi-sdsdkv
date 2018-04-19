@@ -14,9 +14,9 @@
 
 #include "mpi.h"
 
-#define ABORT(id, rc) \
-do { \
-    abort_job(__LINE__, id, rc); \
+#define ABORT(id, rc)                                                          \
+do {                                                                           \
+    abort_job(__LINE__, id, rc);                                               \
 } while (0)
 
 static void

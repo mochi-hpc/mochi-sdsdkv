@@ -154,11 +154,7 @@ public:
     sdsdkv_client(void) : m_place(nullptr) { }
     //
     virtual
-    ~sdsdkv_client(void)
-    {
-        // TODO(skg) should be in finalize.
-        //margo_finalize(m_mid);
-    }
+    ~sdsdkv_client(void) = default;
     //
     int
     open(void)

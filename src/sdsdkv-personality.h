@@ -47,9 +47,7 @@ protected:
                           );
         if (hrc != HG_SUCCESS) return result;
         //
-        result = std::string(addr_str);
-        //
-        return result;
+        return std::string(addr_str);
     }
     //
     std::string
@@ -58,9 +56,8 @@ protected:
         hg_addr_t self_addr;
         //
         hg_return_t hrc = margo_addr_self(m_mid, &self_addr);
-        if (hrc != HG_SUCCESS) {
-            return std::string();
-        }
+        if (hrc != HG_SUCCESS) return std::string();
+        //
         std::string result(m_addr_to_string(self_addr));
         //
         margo_addr_free(m_mid, self_addr);
