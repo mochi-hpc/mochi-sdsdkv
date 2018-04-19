@@ -77,14 +77,17 @@ public:
     destroy(
         sdsdkv_context *c
     ) {
+        int rc = SDSDKV_SUCCESS;
+        //
         if (c) {
             if (*c) {
                 sdsdkv_impl *impl = (sdsdkv_impl *)*c;
+                rc = impl->close();
                 delete impl;
             }
             *c = NULL;
         }
-        return SDSDKV_SUCCESS;
+        return rc;
     }
 };
 

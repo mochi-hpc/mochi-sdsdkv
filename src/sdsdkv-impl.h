@@ -84,6 +84,12 @@ public:
     }
     //
     int
+    close(void)
+    {
+        return m_personality->close();
+    }
+    //
+    int
     put(
         const void *key,
         uint64_t key_size,

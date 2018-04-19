@@ -99,6 +99,9 @@ public:
     open(void) = 0;
     //
     virtual int
+    close(void) = 0;
+    //
+    virtual int
     put(
         const void *key,
         uint64_t key_size,

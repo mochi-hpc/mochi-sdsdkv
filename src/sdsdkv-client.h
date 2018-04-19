@@ -158,7 +158,8 @@ public:
     }
     //
     int
-    open(void) {
+    open(void)
+    {
         int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
@@ -174,6 +175,12 @@ public:
         rc = m_db_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
+        return SDSDKV_SUCCESS;
+    }
+    //
+    int
+    close(void)
+    {
         return SDSDKV_SUCCESS;
     }
     //

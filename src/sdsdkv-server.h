@@ -164,6 +164,11 @@ public:
         //
         return SDSDKV_SUCCESS;
     }
+    int
+    close(void)
+    {
+        return SDSDKV_SUCCESS;
+    }
     //
     int
     xchange_gid(void)
