@@ -9,6 +9,7 @@
 #include "sdsdkv.h"
 
 #include <cstdlib>
+#include <unistd.h>
 
 #include "mpi.h"
 
@@ -59,15 +60,30 @@ main(int argc, char **argv)
         int rc = SDSDKV_SUCCESS;
         for (int i = 0; i < 2; ++i) {
             int key = i + rank;
-            int value = i + 1;
+            int value = key + 1;
             rc = sdsdkv_put(
                      dkvc,
                      (const void *)&key,
                      sizeof(int),
                      (const void *)&value,
                      sizeof(int)
-                );
+                 );
             if (rc != SDSDKV_SUCCESS) abort_job();
+        }
+        //
+        for (int i = 0; i < 2; ++i) {
+            int key = i + rank;
+            int value = -1;
+            uint64_t value_size = sizeof(int);
+            rc = sdsdkv_get(
+                     dkvc,
+                     (const void *)&key,
+                     sizeof(int),
+                     &value,
+                     &value_size
+                 );
+            if (rc != SDSDKV_SUCCESS) abort_job();
+            printf("rank=%d (key=%d, val=%d)\n", rank, key, value);
         }
     }
     //

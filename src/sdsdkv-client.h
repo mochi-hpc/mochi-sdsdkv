@@ -247,6 +247,7 @@ public:
         const auto db = ph_db.second;
         // Actually do the put.
         int rc = sdskv_get(provider, db, key, key_size, value, value_size);
+        printf("rc=%d\n", rc);
         if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
         //
         return SDSDKV_SUCCESS;
