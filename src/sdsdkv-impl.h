@@ -92,6 +92,16 @@ public:
     ) {
         return m_personality->put(key, key_size, value, value_size);
     }
+    //
+    int
+    get(
+        const void *key,
+        uint64_t key_size,
+        void *value,
+        uint64_t *value_size
+    ) {
+        return m_personality->get(key, key_size, value, value_size);
+    }
 };
 
 /*

@@ -106,6 +106,14 @@ public:
         uint64_t value_size
     ) = 0;
     //
+    virtual int
+    get(
+        const void *key,
+        uint64_t key_size,
+        void *value,
+        uint64_t *value_size
+    ) = 0;
+    //
 #if 0 // TODO(skg)
     virtual int
     close(void) = 0;

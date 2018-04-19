@@ -136,6 +136,18 @@ sdsdkv_put(
  *
  */
 int
+sdsdkv_get(
+    sdsdkv_context c,
+    const void *key,
+    uint64_t key_size,
+    void *value,
+    uint64_t *value_size
+);
+
+/**
+ *
+ */
+int
 sdsdkv_destroy(
     sdsdkv_context c
 );

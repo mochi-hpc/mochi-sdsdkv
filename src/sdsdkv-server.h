@@ -217,6 +217,16 @@ public:
     ) {
         return SDSDKV_ERR_NOT_SUPPORTED;
     }
+    //
+    int
+    get(
+        const void *,
+        uint64_t,
+        void *,
+        uint64_t *
+    ) {
+        return SDSDKV_ERR_NOT_SUPPORTED;
+    }
 };
 
 /*

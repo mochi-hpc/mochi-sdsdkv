@@ -201,6 +201,7 @@ public:
     ) {
         // TODO(skg) ???
         static unsigned long server_indices[CH_MAX_REPLICATION];
+        // TODO(skg) ???
         static const unsigned int replication = 1;
         //
         ch_placement_find_closest(
@@ -216,6 +217,36 @@ public:
         const auto db = ph_db.second;
         // Actually do the put.
         int rc = sdskv_put(provider, db, key, key_size, value, value_size);
+        if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
+        //
+        return SDSDKV_SUCCESS;
+    }
+    // TODO(skg) abstract find_closest
+    int
+    get(
+        const void *key,
+        uint64_t key_size,
+        void *value,
+        uint64_t *value_size
+    ) {
+        // TODO(skg) ???
+        static unsigned long server_indices[CH_MAX_REPLICATION];
+        // TODO(skg) ???
+        static const unsigned int replication = 1;
+        //
+        ch_placement_find_closest(
+            m_place,
+            // TODO(skg) How to properly handle arbitrary data?
+            *(uint64_t *)(key),
+            replication,
+            server_indices
+        );
+        // Stash info needed for put.
+        const auto ph_db = m_ph_dbs[server_indices[0]];
+        const auto provider = ph_db.first;
+        const auto db = ph_db.second;
+        // Actually do the put.
+        int rc = sdskv_get(provider, db, key, key_size, value, value_size);
         if (rc != SDSKV_SUCCESS) return SDSDKV_ERR;
         //
         return SDSDKV_SUCCESS;

@@ -73,9 +73,9 @@ main(int argc, char **argv)
     //
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) abort_job();
-
+    //
     erc = MPI_Finalize();
     if (erc != MPI_SUCCESS) abort_job();
-
+    //
     return EXIT_SUCCESS;
 }
