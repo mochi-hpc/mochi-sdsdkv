@@ -52,27 +52,20 @@ public:
         // Cache user-provided configuration.
         m_config = new sdsdkv_iconfig();
         int rc = m_config->init(config);
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         // Create and initialize MPI infrastructure.
         m_mpi = new sdsdkv_mpi();
         rc = m_mpi->init(*m_config);
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         // Create and initialize personality instance based on configury.
         rc = personality_factory::create(
                  m_config->personality,
                  &m_personality
              );
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
+        //
         rc = m_personality->init(m_mpi, config);
-        if (rc != SDSDKV_SUCCESS) {
-            return rc;
-        }
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         return SDSDKV_SUCCESS;
     }

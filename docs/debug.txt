@@ -1,0 +1,2 @@
+valgrind --leak-check=full --trace-children=yes --track-origins=yes \
+--log-file=OUT.valgrind.%q{PMI_RANK}

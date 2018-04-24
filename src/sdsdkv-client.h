@@ -202,6 +202,8 @@ public:
         ssg_group_destroy(m_gid);
         ssg_finalize();
         //
+        ch_placement_finalize(m_place);
+        //
         margo_finalize(m_mid);
         //
         return SDSDKV_SUCCESS;

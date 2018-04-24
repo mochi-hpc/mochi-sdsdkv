@@ -46,7 +46,7 @@ main(int argc, char **argv)
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
     erc = MPI_Comm_size(MPI_COMM_WORLD, &numpe);
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
-    assert(numpe == 4 && "numpe must equal 4");
+//    assert(numpe == 4 && "numpe must equal 4");
 
     sdsdkv_config dkv_config = {
         /* .init_comm = */
@@ -70,6 +70,7 @@ main(int argc, char **argv)
     //
     erc = sdsdkv_open(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
+#if 0
     //
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
         for (int i = 0; i < 2; ++i) {
@@ -106,7 +107,8 @@ main(int argc, char **argv)
             }
         }
     }
-    sleep(5);
+#endif
+    sleep(2);
     //
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
