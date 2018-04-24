@@ -163,16 +163,14 @@ public:
             m_mpi->get_world_id()
         );
 #endif
-        //
-        ssg_group_destroy(m_gid);
-        ssg_finalize();
-        //
         return SDSDKV_SUCCESS;
     }
     int
     close(void)
     {
-        //margo_finalize(m_mid);
+        ssg_group_destroy(m_gid);
+        ssg_finalize();
+        //
         return SDSDKV_SUCCESS;
     }
     //

@@ -52,7 +52,7 @@ main(int argc, char **argv)
         /* .init_comm = */
         MPI_COMM_WORLD,
         /* .personality = */
-        (rank % 2 == 0) ? SDSDKV_PERSONALITY_CLIENT : SDSDKV_PERSONALITY_SERVER,
+        (rank % 2 == 0) ? SDSDKV_PERSONALITY_SERVER: SDSDKV_PERSONALITY_CLIENT,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */

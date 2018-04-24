@@ -199,8 +199,12 @@ public:
         }
         sdskv_client_finalize(m_kvcl);
         //
-        ssg_group_destroy(m_gid);
-        ssg_finalize();
+        rc = ssg_group_detach(m_gid);
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        rc = ssg_group_destroy(m_gid);
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        rc = ssg_finalize();
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         ch_placement_finalize(m_place);
         //
