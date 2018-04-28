@@ -26,6 +26,13 @@
 #define SDSDKV_SERVER_VERBOSE
 
 static void
+finalize_cb(void *cba)
+{
+    ssg_finalize();
+    ssg_group_destroy(*(ssg_group_id_t *)cba);
+}
+
+static void
 group_update_cb(
     ssg_membership_update_t update,
     void *cb_dat
@@ -156,6 +163,8 @@ public:
             );
         }
 #endif
+        margo_push_finalize_callback(m_mid, finalize_cb, &m_mid);
+        //
         margo_wait_for_finalize(m_mid);
 #ifdef SDSDKV_SERVER_VERBOSE
         printf(
@@ -165,11 +174,10 @@ public:
 #endif
         return SDSDKV_SUCCESS;
     }
+    //
     int
     close(void)
     {
-        ssg_group_destroy(m_gid);
-        ssg_finalize();
         //
         return SDSDKV_SUCCESS;
     }
