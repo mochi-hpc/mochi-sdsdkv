@@ -56,6 +56,7 @@ main(int argc, char **argv)
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */
+        // TODO(skg) Make leveldb work.
         SDSDKV_DB_MAP,
         /* .group_name = */
         (char *)"test-group",
@@ -108,7 +109,6 @@ main(int argc, char **argv)
         }
     }
 #endif
-    sleep(2);
     //
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
