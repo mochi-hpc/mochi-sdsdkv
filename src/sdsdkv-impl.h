@@ -12,12 +12,20 @@
 
 #pragma once
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "sdsdkv-personality-factory.h"
 #include "sdsdkv-mpi.h"
 #include "sdsdkv-config.h"
 
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 #include <iostream>
 #include <stdexcept>

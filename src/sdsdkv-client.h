@@ -19,7 +19,6 @@
 #include "sdskv-client.h"
 #include "ch-placement.h"
 
-#include <iostream> // TODO(skg) Not really needed. Just for debug.
 #include <vector>
 #include <utility>
 
