@@ -120,7 +120,8 @@ private:
                      m_provider,
                      m_config->db_name.c_str(),
                      sdsdkv_iconfig::get_real_db_type(m_config->db_type),
-                     NULL /* sdskv_compare_fn comp_fn */,
+                     // TODO(skg) Make a user param.
+                     SDSKV_COMPARE_DEFAULT, /* sdskv_compare_fn comp_fn */
                      &m_dbid
                  );
         if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);

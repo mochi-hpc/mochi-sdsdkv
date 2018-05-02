@@ -19,6 +19,8 @@
 #include "sdskv-client.h"
 #include "ch-placement.h"
 
+#include <unistd.h>
+
 #include <vector>
 #include <utility>
 
