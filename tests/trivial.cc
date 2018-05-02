@@ -46,24 +46,22 @@ main(int argc, char **argv)
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
     erc = MPI_Comm_size(MPI_COMM_WORLD, &numpe);
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
-//    assert(numpe == 4 && "numpe must equal 4");
 
     sdsdkv_config dkv_config = {
         /* .init_comm = */
         MPI_COMM_WORLD,
         /* .personality = */
-        (rank % 2 == 0) ? SDSDKV_PERSONALITY_SERVER: SDSDKV_PERSONALITY_CLIENT,
+        (rank == 0) ? SDSDKV_PERSONALITY_SERVER: SDSDKV_PERSONALITY_CLIENT,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */
-        // TODO(skg) Make leveldb work.
-        SDSDKV_DB_MAP,
+        SDSDKV_DB_LEVELDB,
         /* .group_name = */
-        (char *)"test-group",
+        (char *)"groupname",
         /* .db_name = */
-        (char *)"db/test",
+        (char *)"TEST-DB",
         /* .comm_protocol */
-        (char *)"tcp",
+        (char *)"ofi+tcp",
     };
     //
     erc = sdsdkv_create(&dkvc, &dkv_config);
@@ -71,10 +69,10 @@ main(int argc, char **argv)
     //
     erc = sdsdkv_open(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
-#if 0
+    static int nkeys = 20;
     //
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < nkeys; ++i) {
             uint64_t key = i + rank;
             int value = key + 1;
             erc = sdsdkv_put(
@@ -87,28 +85,24 @@ main(int argc, char **argv)
             if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
         }
     }
-    sleep(2);
-    if (rank == 0) {
-        int ranks[2] = {0, 2};
-        for (int r = 0; r < 2; ++r) {
-            //
-            for (int i = 0; i < 2; ++i) {
-                uint64_t key = i + ranks[r];
-                int value = -1;
-                uint64_t value_size = sizeof(int);
-                erc = sdsdkv_get(
-                          dkvc,
-                          (const void *)&key,
-                          sizeof(int),
-                          &value,
-                          &value_size
-                      );
-                if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
-                printf("rank=%d (key=%lu, val=%d)\n", ranks[r], key, value);
-            }
+    sleep(3);
+    if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
+        for (int i = 0; i < nkeys; ++i) {
+            uint64_t key = i + rank;
+            int value = -1;
+            uint64_t value_size = sizeof(int);
+            erc = sdsdkv_get(
+                      dkvc,
+                      (const void *)&key,
+                      sizeof(int),
+                      &value,
+                      &value_size
+                  );
+            if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
+            printf("rank=%d (key=%lu, val=%d)\n", rank, key, value);
         }
     }
-#endif
+    sleep(3);
     //
     erc = sdsdkv_destroy(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);

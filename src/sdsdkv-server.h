@@ -118,6 +118,7 @@ private:
     {
         int rc = sdskv_provider_add_database(
                      m_provider,
+                     // TODO(skg) make unique for each server.
                      m_config->db_name.c_str(),
                      sdsdkv_iconfig::get_real_db_type(m_config->db_type),
                      // TODO(skg) Make a user param.
