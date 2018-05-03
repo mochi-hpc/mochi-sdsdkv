@@ -64,6 +64,8 @@ public:
     //
     std::string group_name;
     //
+    std::string db_path;
+    //
     std::string db_name;
     //
     std::string comm_protocol;
@@ -87,6 +89,7 @@ public:
         hash_be = config.hash_be;
         db_type = config.db_type;
         group_name = string(config.group_name);
+        db_path = string(config.db_path);
         db_name = string(config.db_name);
         comm_protocol = string(config.comm_protocol);
         //

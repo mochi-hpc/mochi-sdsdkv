@@ -120,9 +120,10 @@ private:
                      m_provider,
                      // TODO(skg) make unique for each server.
                      m_config->db_name.c_str(),
+                     m_config->db_path.c_str(),
                      sdsdkv_iconfig::get_real_db_type(m_config->db_type),
                      // TODO(skg) Make a user param.
-                     SDSKV_COMPARE_DEFAULT, /* sdskv_compare_fn comp_fn */
+                     SDSKV_COMPARE_DEFAULT,
                      &m_dbid
                  );
         if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);

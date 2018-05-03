@@ -47,6 +47,9 @@ main(int argc, char **argv)
     erc = MPI_Comm_size(MPI_COMM_WORLD, &numpe);
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
 
+    char *db_path = getenv("PWD");
+    if (!db_path) db_path = (char *)"/tmp";
+
     sdsdkv_config dkv_config = {
         /* .init_comm = */
         MPI_COMM_WORLD,
@@ -58,6 +61,8 @@ main(int argc, char **argv)
         SDSDKV_DB_LEVELDB,
         /* .group_name = */
         (char *)"groupname",
+        /* .db_path = */
+        db_path,
         /* .db_name = */
         (char *)"TEST-DB",
         /* .comm_protocol */
