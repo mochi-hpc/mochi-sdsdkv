@@ -24,6 +24,12 @@ extern "C" {
 /** Convenience definition (in case anyone needs this). */
 #define SDSDKV 1
 
+/** Default comparison function type. */
+#define SDSDKV_COMPARE_DEFAULT NULL
+
+/** Custom comparison function type. */
+typedef int (*sdsdkv_compare_fn)(const void*, size_t, const void*, size_t);
+
 /** External context type. */
 typedef void* sdsdkv_context;
 
@@ -97,6 +103,7 @@ enum sdsdkv_config_db {
     SDSDKV_DB_LEVELDB
 };
 
+
 // TODO(skg) Allow for two modes of operation:
 // - Total lash-up
 // - Connect
@@ -111,6 +118,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_hashing hash_be;
     /** Database type. */
     sdsdkv_config_db db_type;
+    /** Key comparison function. */
+    sdsdkv_compare_fn cmp_fn;
     /** Group name. */
     char *group_name;
     /** If applicable, the path where database files will be written. */

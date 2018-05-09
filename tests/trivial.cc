@@ -54,11 +54,13 @@ main(int argc, char **argv)
         /* .init_comm = */
         MPI_COMM_WORLD,
         /* .personality = */
-        (rank == 0) ? SDSDKV_PERSONALITY_SERVER: SDSDKV_PERSONALITY_CLIENT,
+        (rank == 0) ? SDSDKV_PERSONALITY_SERVER : SDSDKV_PERSONALITY_CLIENT,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */
         SDSDKV_DB_LEVELDB,
+        /* .cmp_fn= */
+        SDSDKV_COMPARE_DEFAULT,
         /* .group_name = */
         (char *)"groupname",
         /* .db_path = */

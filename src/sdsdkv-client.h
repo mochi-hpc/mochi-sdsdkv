@@ -140,7 +140,8 @@ private:
         //
         ch_placement_find_closest(
             m_place,
-            // TODO(skg) How to properly handle arbitrary data?
+            // TODO(skg) How to properly handle arbitrary-sized data (e.g., data
+            // less than sizeof(uint64_t))?
             *(uint64_t *)(key),
             replication,
             server_indices

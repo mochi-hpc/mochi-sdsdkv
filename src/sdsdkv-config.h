@@ -62,6 +62,8 @@ public:
     //
     sdsdkv_config_db db_type;
     //
+    sdsdkv_compare_fn cmp_fn;
+    //
     std::string group_name;
     //
     std::string db_path;
@@ -88,6 +90,7 @@ public:
         personality = config.personality;
         hash_be = config.hash_be;
         db_type = config.db_type;
+        cmp_fn = config.cmp_fn;
         group_name = string(config.group_name);
         db_path = string(config.db_path);
         db_name = string(config.db_name);
