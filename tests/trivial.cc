@@ -52,7 +52,7 @@ main(int argc, char **argv)
     char *db_prefix = getenv("PWD");
     if (!db_prefix) db_prefix = (char *)"/tmp";
 
-    std::string db_name = std::string(db_prefix) + "/db-name";
+    std::string db_name = std::string(db_prefix) + "/TEST-DB";
 
     sdsdkv_config dkv_config = {
         /* .init_comm = */
@@ -83,13 +83,13 @@ main(int argc, char **argv)
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
         for (int i = 0; i < nkeys; ++i) {
             uint64_t key = i + rank;
-            int value = key + 1;
+            uint64_t value = key + 1;
             erc = sdsdkv_put(
                       dkvc,
                       (const void *)&key,
-                      sizeof(int),
+                      sizeof(key),
                       (const void *)&value,
-                      sizeof(int)
+                      sizeof(value)
                   );
             if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
         }
@@ -98,17 +98,19 @@ main(int argc, char **argv)
     if (dkv_config.personality == SDSDKV_PERSONALITY_CLIENT) {
         for (int i = 0; i < nkeys; ++i) {
             uint64_t key = i + rank;
-            int value = -1;
-            uint64_t value_size = sizeof(int);
+            uint64_t value = -1;
+            uint64_t value_size = sizeof(value);
             erc = sdsdkv_get(
                       dkvc,
                       (const void *)&key,
-                      sizeof(int),
+                      sizeof(key),
                       &value,
                       &value_size
                   );
             if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
-            printf("rank=%d (key=%lu, val=%d)\n", rank, key, value);
+            if (value != key + 1) ABORT(rank, -1);
+            if (sizeof(value) != value_size) ABORT(rank, -2);
+            printf("rank=%d (key=%lu, val=%lu)\n", rank, key, value);
         }
     }
     sleep(3);
