@@ -116,10 +116,11 @@ private:
     int
     m_keyval_add_db(void)
     {
+        const int pid = m_mpi->get_pgroup_id();
+        const std::string db_name = personality::m_get_db_name(pid);
         int rc = sdskv_provider_add_database(
                      m_provider,
-                     // TODO(skg) make unique for each server.
-                     m_config->db_name.c_str(),
+                     db_name.c_str(),
                      m_config->db_path.c_str(),
                      sdsdkv_iconfig::get_real_db_type(m_config->db_type),
                      m_config->cmp_fn,

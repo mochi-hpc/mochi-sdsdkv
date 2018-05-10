@@ -64,6 +64,17 @@ protected:
         //
         return result;
     }
+    //
+    static std::string
+    m_get_db_name(int id)
+    {
+        // Database instance name prefix.
+        static const char db_prefix[] = "db";
+        const std::string ids = std::to_string(id);
+        const std::string dbp = std::string(db_prefix);
+        //
+        return dbp + ids;
+    }
 public:
     //
     personality(void)

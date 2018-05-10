@@ -98,7 +98,8 @@ private:
             if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             //
             sdskv_database_id_t db_id;
-            rc = sdskv_open(kvph, m_config->db_name.c_str(), &db_id);
+            const std::string db_name = personality::m_get_db_name(i);
+            rc = sdskv_open(kvph, db_name.c_str(), &db_id);
             if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             //
             m_ph_dbs.push_back(std::make_pair(kvph, db_id));

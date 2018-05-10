@@ -68,8 +68,6 @@ public:
     //
     std::string db_path;
     //
-    std::string db_name;
-    //
     std::string comm_protocol;
     //
     sdsdkv_iconfig(void) = default;
@@ -93,7 +91,6 @@ public:
         cmp_fn = config.cmp_fn;
         group_name = string(config.group_name);
         db_path = string(config.db_path);
-        db_name = string(config.db_name);
         comm_protocol = string(config.comm_protocol);
         //
         return SDSDKV_SUCCESS;

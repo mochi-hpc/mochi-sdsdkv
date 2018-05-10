@@ -14,6 +14,8 @@
 
 #include "mpi.h"
 
+#include <string>
+
 #define ABORT(id, rc)                                                          \
 do {                                                                           \
     abort_job(__LINE__, id, rc);                                               \
@@ -47,14 +49,16 @@ main(int argc, char **argv)
     erc = MPI_Comm_size(MPI_COMM_WORLD, &numpe);
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
 
-    char *db_path = getenv("PWD");
-    if (!db_path) db_path = (char *)"/tmp";
+    char *db_prefix = getenv("PWD");
+    if (!db_prefix) db_prefix = (char *)"/tmp";
+
+    std::string db_name = std::string(db_prefix) + "/db-name";
 
     sdsdkv_config dkv_config = {
         /* .init_comm = */
         MPI_COMM_WORLD,
         /* .personality = */
-        (rank == 0) ? SDSDKV_PERSONALITY_SERVER : SDSDKV_PERSONALITY_CLIENT,
+        (rank % 2 == 0) ? SDSDKV_PERSONALITY_SERVER : SDSDKV_PERSONALITY_CLIENT,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */
@@ -64,9 +68,7 @@ main(int argc, char **argv)
         /* .group_name = */
         (char *)"groupname",
         /* .db_path = */
-        db_path,
-        /* .db_name = */
-        (char *)"TEST-DB",
+        (char *)db_name.c_str(),
         /* .comm_protocol */
         (char *)"ofi+tcp",
     };

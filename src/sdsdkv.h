@@ -124,8 +124,6 @@ typedef struct sdsdkv_config {
     char *group_name;
     /** If applicable, the path where database files will be written. */
     char *db_path;
-    /** Database name. */
-    char *db_name;
     /** Communication protocol. */
     char *comm_protocol;
 } sdsdkv_config;

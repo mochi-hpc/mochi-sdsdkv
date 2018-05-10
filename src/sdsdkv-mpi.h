@@ -26,7 +26,7 @@ private:
     MPI_Comm m_world_comm;
     /** Personality communicator. */
     MPI_Comm m_personality_comm;
-    /** My ID in world communicator. */
+    /** Size of world communicator. */
     int m_world_size;
     /** My ID in world communicator. */
     int m_world_id;
@@ -36,6 +36,8 @@ private:
     int m_pgroup_id;
     /** Server delegate's world_id. */
     int m_server_delegate_world_id;
+    /** Total number of servers. */
+    int m_num_servers;
 public:
     //
     sdsdkv_mpi(void)
@@ -45,7 +47,8 @@ public:
         , m_world_id(0)
         , m_pgroup_size(0)
         , m_pgroup_id(0)
-        , m_server_delegate_world_id(0) { }
+        , m_server_delegate_world_id(0)
+        , m_num_servers(0) { }
     //
     int
     init(
@@ -88,6 +91,15 @@ public:
                 MPI_SUM,
                 m_world_comm
              );
+        if (rc != MPI_SUCCESS) goto err;
+        // Share number of servers with world.
+        rc = MPI_Bcast(
+            &m_pgroup_size,
+            1,
+            MPI_INT,
+            m_server_delegate_world_id,
+            m_world_comm
+        );
         if (rc != MPI_SUCCESS) goto err;
         //
         return SDSDKV_SUCCESS;
