@@ -10,11 +10,11 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <string>
+#include <cinttypes>
 #include <unistd.h>
 
 #include "mpi.h"
-
-#include <string>
 
 #define ABORT(id, rc)                                                          \
 do {                                                                           \
@@ -110,7 +110,10 @@ main(int argc, char **argv)
             if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
             if (value != key + 1) ABORT(rank, -1);
             if (sizeof(value) != value_size) ABORT(rank, -2);
-            printf("rank=%d (key=%lu, val=%lu)\n", rank, key, value);
+            printf(
+                "rank=%d (key=%" PRIu64 ", val=%" PRIu64 ")\n",
+                rank, key, value
+            );
         }
     }
     sleep(3);

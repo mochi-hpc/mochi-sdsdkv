@@ -116,6 +116,9 @@ private:
     int
     m_keyval_add_db(void)
     {
+        // TODO(skg) add a check that requires that all dbs get used. The
+        // problem that we are trying to avoid is opening a created data store
+        // that was created with a smaller number of servers.
         const int pid = m_mpi->get_pgroup_id();
         const std::string db_name = personality::m_get_db_name(pid);
         int rc = sdskv_provider_add_database(
