@@ -12,11 +12,10 @@
 #include <cstdlib>
 #include <string>
 #include <cinttypes>
-#include <unistd.h>
 
 #include "mpi.h"
 
-static int nkeys = 21;
+static const int nkeys = 21;
 
 #define ABORT(id, rc)                                                          \
 do {                                                                           \
