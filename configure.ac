@@ -76,17 +76,39 @@ inttypes.h sys/types.h unistd.h stdint.h
 ################################################################################
 # Sets SDSKV_SERVER_CFLAGS
 #      SDSKV_SERVER_LIBS
-PKG_CHECK_MODULES([SDSKV_SERVER],dnl
-                  [sdskv-server],dnl
-                  [], dnl
-                  [AC_MSG_ERROR([sdskv-server pkg-config not found. ***])])
+PKG_CHECK_MODULES(
+[SDSKV_SERVER],dnl
+[sdskv-server],dnl
+[], dnl
+[AC_MSG_ERROR([sdskv-server pkg-config not found. ***])]
+)
 
 # Sets SDSKV_CLIENT_CFLAGS
 #      SDSKV_CLIENT_LIBS
-PKG_CHECK_MODULES([SDSKV_CLIENT],dnl
-                  [sdskv-client],dnl
-                  [], dnl
-                  [AC_MSG_ERROR([sdskv-client pkg-config not found. ***])])
+PKG_CHECK_MODULES(
+[SDSKV_CLIENT],dnl
+[sdskv-client],dnl
+[], dnl
+[AC_MSG_ERROR([sdskv-client pkg-config not found. ***])]
+)
+
+# Sets SSG_CFLAGS
+#      SSG_LIBS
+PKG_CHECK_MODULES(
+[SSG],dnl
+[ssg],dnl
+[], dnl
+[AC_MSG_ERROR([ssg pkg-config not found. ***])]
+)
+
+# Sets CH_PLACEMENT_CFLAGS
+#      CH_PLACEMENT_LIBS
+PKG_CHECK_MODULES(
+[CH_PLACEMENT],dnl
+[ch-placement],dnl
+[], dnl
+[AC_MSG_ERROR([ch-placement pkg-config not found. ***])]
+)
 
 AC_CONFIG_FILES([
     Makefile
