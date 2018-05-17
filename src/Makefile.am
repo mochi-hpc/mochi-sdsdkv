@@ -26,12 +26,16 @@ sdsdkv-impl.h \
 sdsdkv.cc
 
 libsdsdkv_la_CFLAGS = \
+@SDSKV_CLIENT_CFLAGS@ \
 @SDSKV_SERVER_CFLAGS@ \
-@SDSKV_CLIENT_CFLAGS@
+@SSG_CFLAGS@ \
+@CH_PLACEMENT_CFLAGS@
+
+libsdsdkv_la_LIBADD = \
+@SSG_LIBS@ \
+@CH_PLACEMENT_LIBS@ \
+@SDSKV_CLIENT_LIBS@ \
+@SDSKV_SERVER_LIBS@
 
 libsdsdkv_la_LDFLAGS = \
 -version-info @SDSDKV_LIBVINFO@
-
-libsdsdkv_la_LIBADD = \
-@SDSKV_SERVER_LIBS@ \
-@SDSKV_CLIENT_LIBS@
