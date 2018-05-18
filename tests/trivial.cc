@@ -99,7 +99,7 @@ main(int argc, char **argv)
     if (!db_prefix) db_prefix = (char *)"/tmp";
     std::string db_name = std::string(db_prefix) + "/TEST-DB";
 
-    auto personality = (
+    sdsdkv_config_personality personality = (
         (rank % 2 == 0) ? SDSDKV_PERSONALITY_SERVER : SDSDKV_PERSONALITY_CLIENT
     );
 
@@ -131,7 +131,8 @@ main(int argc, char **argv)
     //
     erc = sdsdkv_open(dkvc);
     if (erc != SDSDKV_SUCCESS) ABORT(rank, erc);
-
+    // Server instances wait here until shut down by a client during
+    // sdsdkv_destroy.
     if (personality == SDSDKV_PERSONALITY_CLIENT) {
         do_puts(dkvc, rank);
         MPI_Barrier(pcomm);

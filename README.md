@@ -29,11 +29,13 @@ git clone https://xgitlab.cels.anl.gov/sds/sds-repo.git
 # Add to spack.
 spack repo add sds-repo
 # Install via spack.
-spack install sdskeyval
+spack install --dirty sdskeyval+leveldb
+spack install --dirty ssg+mpi
+spack install --dirty ch-placement
 # Refresh spack environment.
 source spack/share/spack/setup-env.sh
-# Load sdskeyval modules.
-source <(spack module loads --dependencies sdskeyval)
+# Load required modules.
+source <(spack module loads --dependencies sdskeyval ssg ch-placement)
 ```
 
 ### Get and build sdsdkv.
