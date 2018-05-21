@@ -11,7 +11,8 @@ AC_PREREQ([2.60])
 AC_INIT([sdsdkv],
         [0.1-alpha],
         [samuel@lanl.gov],
-        [sdsdkv])
+        [sdsdkv],
+        [https://xgitlab.cels.anl.gov/sds/sdsdkv])
 #dnl TODO(skg) add project URL.
 
 AC_CONFIG_MACRO_DIR([config])
@@ -114,6 +115,8 @@ AC_CONFIG_FILES([
     Makefile
     src/Makefile
     tests/Makefile
+    pkgconfig/Makefile
+    pkgconfig/sdsdkv.pc
 ])
 
 AC_OUTPUT

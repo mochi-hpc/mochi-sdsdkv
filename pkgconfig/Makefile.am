@@ -6,12 +6,8 @@
 # top-level directory of this distribution.
 #
 
-ACLOCAL_AMFLAGS = -Iconfig
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = sdsdkv.pc
 
-EXTRA_DIST = \
-README.md LICENSE autogen docs
-
-SUBDIRS = \
-src \
-tests \
-pkgconfig
+# These are generated.
+MOSTLYCLEANFILES = $(pkgconfig_DATA)

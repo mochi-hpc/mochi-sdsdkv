@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @PACKAGE_NAME@
+Description: A distributed key-value service build from other Mochi services.
+Version: @PACKAGE_VERSION@
+URL: @PACKAGE_URL@
+Requires: sdskeyval ch-placement ssg
+Libs: -L${libdir} -lsdsdkv
+Libs.private: @SSG_LIBS@ @CH_PLACEMENT_LIBS@ @SDSKV_CLIENT_LIBS@ @SDSKV_SERVER_LIBS@
+Cflags: -I${includedir}
