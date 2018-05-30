@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @PACKAGE_NAME@
-Description: A distributed key-value service build from other Mochi services.
+Description: A library that provides a distributed Margo-based keyval service.
 Version: @PACKAGE_VERSION@
 URL: @PACKAGE_URL@
 Requires: sdskeyval ch-placement ssg
