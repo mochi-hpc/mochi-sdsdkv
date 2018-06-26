@@ -107,11 +107,15 @@ main(int argc, char **argv)
     erc = MPI_Comm_split(MPI_COMM_WORLD, personality, rank, &pcomm);
     if (erc != MPI_SUCCESS) ABORT(rank, erc);
 
+    const int rpc_thread_count = -1;
+
     sdsdkv_config dkv_config = {
         /* .init_comm = */
         MPI_COMM_WORLD,
         /* .personality = */
         personality,
+        /* .rpc_thread_count */
+        rpc_thread_count,
         /* .hash_be = */
         SDSDKV_HASHING_CH_PLACEMENT,
         /* .db_type = */

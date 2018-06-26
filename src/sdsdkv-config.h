@@ -58,6 +58,8 @@ public:
     //
     sdsdkv_config_personality personality;
     //
+    int rpc_thread_count;
+    //
     sdsdkv_config_hashing hash_be;
     //
     sdsdkv_config_db db_type;
@@ -86,6 +88,7 @@ public:
         //
         init_comm = config.init_comm;
         personality = config.personality;
+        rpc_thread_count = config.rpc_thread_count;
         hash_be = config.hash_be;
         db_type = config.db_type;
         cmp_fn = config.cmp_fn;

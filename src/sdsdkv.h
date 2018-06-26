@@ -114,6 +114,8 @@ typedef struct sdsdkv_config {
     MPI_Comm init_comm;
     /** Process personality. */
     sdsdkv_config_personality personality;
+    /** Margo RPC thread count. Use -1 for default. */
+    int rpc_thread_count;
     /** Hashing back-end. */
     sdsdkv_config_hashing hash_be;
     /** Database type. */
