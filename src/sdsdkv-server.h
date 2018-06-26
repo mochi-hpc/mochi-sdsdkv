@@ -56,6 +56,8 @@ private:
     //
     sdskv_database_id_t m_dbid;
     //
+    sdskv_config_t m_sdskv_config;
+    //
     int
     m_margo_init(void)
     {
@@ -118,12 +120,18 @@ private:
         // that was created with a smaller number of servers.
         const int pid = m_mpi->get_pgroup_id();
         const std::string db_name = personality::m_get_db_name(pid);
-        int rc = sdskv_provider_add_database(
+        // TODO(skg) No overwrite? What's that?
+        static const int db_no_overwrite = 0;
+        m_sdskv_config = {
+            db_name.c_str(),
+            m_config->db_path.c_str(),
+            sdsdkv_iconfig::get_real_db_type(m_config->db_type),
+            m_config->cmp_fn,
+            db_no_overwrite
+        };
+        int rc = sdskv_provider_attach_database(
                      m_provider,
-                     db_name.c_str(),
-                     m_config->db_path.c_str(),
-                     sdsdkv_iconfig::get_real_db_type(m_config->db_type),
-                     m_config->cmp_fn,
+                     &m_sdskv_config,
                      &m_dbid
                  );
         if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
