@@ -80,8 +80,6 @@ private:
     int
     m_db_init(void)
     {
-        printf("client here..\n");
-        //
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
