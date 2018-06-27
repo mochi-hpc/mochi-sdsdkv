@@ -47,9 +47,6 @@ private:
         //
         // TODO(skg) For both the client and the server, figure out if we want
         // progress threads and what the rpc thread count sould be for both.
-
-        // Wait for server-side setup completion.
-        m_mpi->barrier(m_mpi->get_world_comm());
         //
         m_mid = margo_init(
                     m_config->comm_protocol.c_str(),
@@ -166,11 +163,19 @@ public:
     int
     open(void)
     {
+        // NOTE(skg): I know all this barrier stuff is ugly and complicated to
+        // get right, but this helps fix an HG race condition...
+        m_mpi->barrier(m_mpi->get_world_comm());
+        //
         int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = xchange_gid();
         if (rc != SDSDKV_SUCCESS) return rc;
+        //
+        m_mpi->barrier(m_mpi->get_world_comm());
+        //
+        m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_ssg_init();
         if (rc != SDSDKV_SUCCESS) return rc;

@@ -74,9 +74,6 @@ private:
         }
         //
         margo_enable_remote_shutdown(m_mid);
-        // Make sure that server setup is done before moving on. Note that the
-        // clients will wait for all servers to init before starting their init.
-        m_mpi->barrier(m_mpi->get_world_comm());
         //
         return SDSDKV_SUCCESS;
     }
@@ -152,9 +149,12 @@ public:
     int
     open(void)
     {
-        //
+        // NOTE(skg): I know all this barrier stuff is ugly and complicated to
+        // get right, but this helps fix an HG race condition...
         int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) return rc;
+        //
+        m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_ssg_init();
         if (rc != SDSDKV_SUCCESS) return rc;
@@ -162,7 +162,11 @@ public:
         rc = xchange_gid();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
+        m_mpi->barrier(m_mpi->get_world_comm());
+        //
         rc = m_keyval_register_provider();
+        //
+        m_mpi->barrier(m_mpi->get_world_comm());
         if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_keyval_add_db();
