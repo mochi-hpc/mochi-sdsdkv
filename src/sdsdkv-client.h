@@ -45,6 +45,12 @@ private:
         // used for Mercury progress.
         static const int rpc_thread_count = -1;
         //
+        // TODO(skg) For both the client and the server, figure out if we want
+        // progress threads and what the rpc thread count sould be for both.
+
+        // Wait for server-side setup completion.
+        m_mpi->barrier(m_mpi->get_world_comm());
+        //
         m_mid = margo_init(
                     m_config->comm_protocol.c_str(),
                     MARGO_CLIENT_MODE,
@@ -74,6 +80,8 @@ private:
     int
     m_db_init(void)
     {
+        printf("client here..\n");
+        //
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {

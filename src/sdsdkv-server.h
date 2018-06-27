@@ -68,12 +68,15 @@ private:
                        MARGO_SERVER_MODE,
                        use_progress_thread,
                        m_config->rpc_thread_count
-                   );
+                );
         if (m_mid == MARGO_INSTANCE_NULL) {
             return SDSDKV_ERR_SERVICE;
         }
         //
         margo_enable_remote_shutdown(m_mid);
+        // Make sure that server setup is done before moving on. Note that the
+        // clients will wait for all servers to init before starting their init.
+        m_mpi->barrier(m_mpi->get_world_comm());
         //
         return SDSDKV_SUCCESS;
     }
