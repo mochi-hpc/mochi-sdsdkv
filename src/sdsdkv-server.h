@@ -165,9 +165,9 @@ public:
         m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_keyval_register_provider();
+        if (rc != SDSDKV_SUCCESS) return rc;
         //
         m_mpi->barrier(m_mpi->get_world_comm());
-        if (rc != SDSDKV_SUCCESS) return rc;
         //
         rc = m_keyval_add_db();
         if (rc != SDSDKV_SUCCESS) return rc;
