@@ -112,6 +112,14 @@ private:
         return SDSDKV_SUCCESS;
     }
     //
+    const char *
+    m_get_cmp_fn_name(
+        const std::string &i_name
+    ) {
+        if (i_name.empty()) return SDSDKV_COMPARE_DEFAULT;
+        else return i_name.c_str();
+    }
+    //
     int
     m_keyval_add_db(void)
     {
@@ -126,7 +134,7 @@ private:
             db_name.c_str(),
             m_config->db_path.c_str(),
             sdsdkv_iconfig::get_real_db_type(m_config->db_type),
-            m_config->cmp_fn,
+            m_get_cmp_fn_name(m_config->cmp_fn_name),
             db_no_overwrite
         };
         int rc = sdskv_provider_attach_database(

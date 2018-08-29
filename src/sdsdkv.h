@@ -25,6 +25,7 @@ extern "C" {
 #define SDSDKV 1
 
 /** Default comparison function type. */
+// TODO(skg) Add registration function for custom compare.
 #define SDSDKV_COMPARE_DEFAULT NULL
 
 /** Custom comparison function type. */
@@ -120,8 +121,8 @@ typedef struct sdsdkv_config {
     sdsdkv_config_hashing hash_be;
     /** Database type. */
     sdsdkv_config_db db_type;
-    /** Key comparison function. */
-    sdsdkv_compare_fn cmp_fn;
+    /** Name of registered key comparison function. */
+    char *cmp_fn_name;
     /** Group name. */
     char *group_name;
     /** If applicable, the path where database files will be written. */

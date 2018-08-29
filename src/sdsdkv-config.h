@@ -64,7 +64,7 @@ public:
     //
     sdsdkv_config_db db_type;
     //
-    sdsdkv_compare_fn cmp_fn;
+    std::string cmp_fn_name;
     //
     std::string group_name;
     //
@@ -91,7 +91,12 @@ public:
         rpc_thread_count = config.rpc_thread_count;
         hash_be = config.hash_be;
         db_type = config.db_type;
-        cmp_fn = config.cmp_fn;
+        if (config.cmp_fn_name == SDSDKV_COMPARE_DEFAULT) {
+            cmp_fn_name = string("");
+        }
+        else {
+            cmp_fn_name = string(config.cmp_fn_name);
+        }
         group_name = string(config.group_name);
         db_path = string(config.db_path);
         comm_protocol = string(config.comm_protocol);
