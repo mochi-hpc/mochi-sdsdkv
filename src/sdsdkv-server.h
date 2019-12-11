@@ -40,10 +40,10 @@ group_update_cb(
     int world_id = *(int *)cb_dat;
 
     switch (update.type) {
-        case SSG_MEMBER_ADD:
-            printf("%d SSG update: ADD member %lu\n", world_id, update.member);
+        case SSG_MEMBER_JOINED:
+            printf("%d SSG update: JOINED member %lu\n", world_id, update.member);
             break;
-        case SSG_MEMBER_REMOVE:
+        case SSG_MEMBER_LEFT:
             printf("%d SSG update: RM member %lu\n", world_id, update.member);
             break;
     }
