@@ -68,7 +68,7 @@ private:
         int rc = ssg_init(m_mid);
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
-        rc = ssg_group_attach(m_gid);
+        rc = ssg_group_observe(m_gid);
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
@@ -80,7 +80,7 @@ private:
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
-            hg_addr_t server_addr = ssg_get_addr(m_gid, i);
+            hg_addr_t server_addr = ssg_get_group_member_addr(m_gid, i);
             if (server_addr == HG_ADDR_NULL) return SDSDKV_ERR_SERVICE;
             m_server_addrs.push_back(server_addr);
             //
@@ -211,7 +211,7 @@ public:
         }
         sdskv_client_finalize(m_kvcl);
         //
-        rc = ssg_group_detach(m_gid);
+        rc = ssg_group_unobserve(m_gid);
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         rc = ssg_group_destroy(m_gid);
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;

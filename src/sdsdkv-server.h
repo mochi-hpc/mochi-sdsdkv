@@ -91,7 +91,7 @@ private:
                     &group_update_cb,
                     &world_id
                 );
-        if (m_gid == SSG_GROUP_ID_NULL) return SDSDKV_ERR_SERVICE;
+        if (m_gid == SSG_GROUP_ID_INVALID) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
     }

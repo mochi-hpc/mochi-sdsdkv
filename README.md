@@ -35,12 +35,15 @@ spack install --dirty ch-placement
 # Refresh spack environment.
 source spack/share/spack/setup-env.sh
 # Load required modules.
-source <(spack module loads --dependencies sdskeyval ssg ch-placement)
+#spack load -r autoconf
+#spack load -r automake
+#spack load -r libtool
+source <(spack module tcl loads --dependencies sdskeyval ssg ch-placement autoconf automake libtool)
 ```
 
 ### Get and build sdsdkv.
 
 ```
 git clone https://xgitlab.cels.anl.gov/sds/sdsdkv.git
-cd sdsdkv && ./autogen && ./configure CXX=mpic++ && make
+cd sdsdkv && autoreconf --force --install && ./configure CXX=mpic++ && make
 ```

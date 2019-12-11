@@ -81,7 +81,7 @@ public:
         : m_mpi(nullptr)
         , m_config(nullptr)
         , m_mid(MARGO_INSTANCE_NULL)
-        , m_gid(SSG_GROUP_ID_NULL) { }
+        , m_gid(SSG_GROUP_ID_INVALID) { }
     //
     virtual
     ~personality(void)
