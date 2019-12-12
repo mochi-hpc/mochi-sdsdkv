@@ -65,10 +65,10 @@ private:
     int
     m_ssg_init(void)
     {
-        int rc = ssg_init(m_mid);
+        int rc = ssg_init();
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
-        rc = ssg_group_observe(m_gid);
+        rc = ssg_group_observe(m_mid, m_gid);
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
@@ -241,7 +241,10 @@ public:
                  root,
                  m_mpi->get_world_comm()
              );
-        if (rc != SDSDKV_SUCCESS) goto out;
+        if (rc != SDSDKV_SUCCESS) {
+            if (gid_bits) free(gid_bits);
+            return(rc);
+        }
         //
         gid_bits = (char *)calloc(gid_size_ul, sizeof(*gid_bits));
         if (!gid_bits) return SDSDKV_ERR_OOR;
@@ -253,10 +256,14 @@ public:
                  root,
                  m_mpi->get_world_comm()
              );
-        if (rc != SDSDKV_SUCCESS) goto out;
+        if (rc != SDSDKV_SUCCESS) {
+            if (gid_bits) free(gid_bits);
+            return(rc);
+        }
         //
-        ssg_group_id_deserialize(gid_bits, gid_size_ul, &m_gid);
-    out:
+        int num_addrs = 0;
+        ssg_group_id_deserialize(gid_bits, gid_size_ul, &num_addrs, &m_gid);
+        //
         if (gid_bits) free(gid_bits);
         //
         return rc;

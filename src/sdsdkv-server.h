@@ -81,7 +81,7 @@ private:
     int
     m_ssg_init(void)
     {
-        int rc = ssg_init(m_mid);
+        int rc = ssg_init();
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         int world_id = m_mpi->get_world_id();
@@ -214,7 +214,7 @@ public:
         char *gid_bits = nullptr;
         size_t gid_size = 0;
         //
-        ssg_group_id_serialize(m_gid, &gid_bits, &gid_size);
+        ssg_group_id_serialize(m_gid, SSG_ALL_MEMBERS, &gid_bits, &gid_size);
         if (!gid_bits || gid_size == 0) {
             return SDSDKV_ERR_SERVICE;
         }
