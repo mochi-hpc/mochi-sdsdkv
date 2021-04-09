@@ -111,6 +111,9 @@ PKG_CHECK_MODULES(
 [AC_MSG_ERROR([ch-placement pkg-config not found. ***])]
 )
 
+CXXFLAGS="${CXXFLAGS} ${SDSKV_SERVER_CFLAGS} ${SSG_CFLAGS} ${CH_PLACEMENT_CFLAGS}"
+LIBS="${LIBS} ${SDSKV_SERVER_LIBS} ${SSG_LIBS} ${CH_PLACEMENT_LIBS}"
+
 AC_CONFIG_FILES([
     Makefile
     src/Makefile

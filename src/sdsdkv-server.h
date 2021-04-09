@@ -34,17 +34,18 @@ finalize_cb(void *cba)
 
 static void
 group_update_cb(
-    ssg_membership_update_t update,
-    void *cb_dat
+    void *cb_dat,
+    ssg_member_id_t member_id,
+    ssg_member_update_type_t update
 ) {
     int world_id = *(int *)cb_dat;
 
-    switch (update.type) {
+    switch (update) {
         case SSG_MEMBER_JOINED:
-            printf("%d SSG update: JOINED member %lu\n", world_id, update.member);
+            printf("%d SSG update: JOINED member %lu\n", world_id, member_id);
             break;
         case SSG_MEMBER_LEFT:
-            printf("%d SSG update: RM member %lu\n", world_id, update.member);
+            printf("%d SSG update: RM member %lu\n", world_id, member_id);
             break;
     }
 }
@@ -85,11 +86,14 @@ private:
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         int world_id = m_mpi->get_world_id();
-        m_gid = ssg_group_create_mpi(
+        m_gid = ssg_group_create_mpi(m_mid,
                     m_config->group_name.c_str(),
                     m_mpi->get_peronality_comm(),
-                    &group_update_cb,
-                    &world_id
+                    //&group_update_cb,
+                    //&world_id
+                    NULL,
+                    NULL,
+                    NULL
                 );
         if (m_gid == SSG_GROUP_ID_INVALID) return SDSDKV_ERR_SERVICE;
         //
@@ -162,7 +166,7 @@ public:
         int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
-        m_mpi->barrier(m_mpi->get_world_comm());
+        //m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_ssg_init();
         if (rc != SDSDKV_SUCCESS) return rc;
@@ -170,12 +174,12 @@ public:
         rc = xchange_gid();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
-        m_mpi->barrier(m_mpi->get_world_comm());
+        //m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_keyval_register_provider();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
-        m_mpi->barrier(m_mpi->get_world_comm());
+        //m_mpi->barrier(m_mpi->get_world_comm());
         //
         rc = m_keyval_add_db();
         if (rc != SDSDKV_SUCCESS) return rc;
@@ -214,7 +218,7 @@ public:
         char *gid_bits = nullptr;
         size_t gid_size = 0;
         //
-        ssg_group_id_serialize(m_gid, SSG_ALL_MEMBERS, &gid_bits, &gid_size);
+        ssg_group_id_serialize(m_gid, 1, &gid_bits, &gid_size);
         if (!gid_bits || gid_size == 0) {
             return SDSDKV_ERR_SERVICE;
         }
