@@ -25,25 +25,54 @@ spack bootstrap
 
 ```
 # Checkout sds-repo
-git clone https://xgitlab.cels.anl.gov/sds/sds-repo.git
+git clone https://github.com/mochi-hpc/mochi-spack-packages.git
 # Add to spack.
-spack repo add sds-repo
+spack repo add mochi-spack-packages
 # Install via spack.
-spack install --dirty sdskeyval+leveldb
-spack install --dirty ssg+mpi
-spack install --dirty ch-placement
+#spack install --dirty mochi-sdskv+leveldb
+#spack install --dirty mochi-ssg+mpi
+#spack install --dirty mochi-ch-placement
+
+
+# Be sure and have libfabric build the proper network layers. For the trivial test,
+# the tcp and rxm network layers are required. To build these, add the variants to
+# the spack packages in ~/.spack/packages.yaml or ~/.spack/linux/packages.yaml
+#   libfabric:
+#     variants: fabrics=tcp,rxm
+
+spack install mochi-sdskv^leveldb@1.22 mochi-ssg+mpi mochi-ch-placement pkg-config
 # Refresh spack environment.
 source spack/share/spack/setup-env.sh
 # Load required modules.
 #spack load -r autoconf
 #spack load -r automake
 #spack load -r libtool
-source <(spack module tcl loads --dependencies sdskeyval ssg ch-placement autoconf automake libtool)
+source <(spack module tcl loads mochi-sdskv mochi-ssg mochi-ch-placement autoconf automake libtool pkg-config)
 ```
 
 ### Get and build sdsdkv.
 
 ```
-git clone https://xgitlab.cels.anl.gov/sds/sdsdkv.git
-cd sdsdkv && autoreconf --force --install && ./configure CXX=mpic++ && make
+git clone https://github.com/mochi-hpc/mochi-sdsdkv.git
+cd mochi-sdsdkv && autoreconf --force --install && ./configure CXX=mpic++ && make
 ```
+
+Some of the possible errors and their solutions:
+
+configure.ac:53: error: possibly undefined macro: AC\_MSG\_ERROR
+   This is caused by not having pkg-config
+
+sdsdkv-config.h:17:10: fatal error: sdskv-common.h: No such file or directory
+   17 | #include "sdskv-common.h"
+
+   This is from a change in behavior of the PKG\_CHECK\_MODULES macro in configure.ac. A fix has been added
+   to append the the paths to the CXX\_FLAGS and LIBS variables
+
+sdsdkv-misci.h:29:15: error: ‘SDSKV\_ERR\_MERCURY’ was not declared in this scope; did you mean ‘SDSKV\_ERR\_ERASE’?
+   29 |         case (SDSKV\_ERR\_MERCURY):     return SDSDKV\_ERR\_SERVICE;
+
+   The error codes have changed in SDSKV. Check the versions of SDSKV and SDSDKV.
+
+[error] Could not initialize hg\_class while running the trivial test
+
+    Check that you are building libfabric with tcp and rxm support

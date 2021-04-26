@@ -67,9 +67,9 @@ private:
     {
         int rc = ssg_init();
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
-        //
-        rc = ssg_group_observe(m_mid, m_gid);
-        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        // These are only for better diagnostics
+//      rc = ssg_group_observe(m_mid, m_gid);
+//      if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         return SDSDKV_SUCCESS;
     }
@@ -80,7 +80,8 @@ private:
         hg_size_t gsize = ssg_get_group_size(m_gid);
         //
         for (decltype(gsize) i = 0; i < gsize; ++i) {
-            hg_addr_t server_addr = ssg_get_group_member_addr(m_gid, i);
+            ssg_member_id_t ssg_id = ssg_get_group_member_id_from_rank(m_gid, i);
+            hg_addr_t server_addr = ssg_get_group_member_addr(m_gid, ssg_id);
             if (server_addr == HG_ADDR_NULL) return SDSDKV_ERR_SERVICE;
             m_server_addrs.push_back(server_addr);
             //
@@ -165,20 +166,20 @@ public:
     {
         // NOTE(skg): I know all this barrier stuff is ugly and complicated to
         // get right, but this helps fix an HG race condition...
-        m_mpi->barrier(m_mpi->get_world_comm());
+        //m_mpi->barrier(m_mpi->get_world_comm());
         //
         int rc = m_margo_init();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
+        rc = m_ssg_init();
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
+        //
+        if (rc != SDSDKV_SUCCESS) return rc;
         rc = xchange_gid();
         if (rc != SDSDKV_SUCCESS) return rc;
         //
-        m_mpi->barrier(m_mpi->get_world_comm());
-        //
-        m_mpi->barrier(m_mpi->get_world_comm());
-        //
-        rc = m_ssg_init();
-        if (rc != SDSDKV_SUCCESS) return rc;
+        rc = ssg_group_observe(m_mid, m_gid);
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         rc = m_placement_init();
         if (rc != SDSDKV_SUCCESS) return rc;
@@ -200,8 +201,10 @@ public:
                 if (rc != SDSKV_SUCCESS) return sdskv2irc(rc);
             }
         }
-        int rc = m_mpi->barrier(m_mpi->get_peronality_comm());
-        if (rc != SDSDKV_ERR_MPI) return rc;
+        //int rc = m_mpi->barrier(m_mpi->get_peronality_comm());
+        //if (rc != SDSDKV_ERR_MPI) return rc;
+        int rc = ssg_group_unobserve(m_gid);
+        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         //
         for (auto &t : m_ph_dbs) {
             sdskv_provider_handle_release(t.first);
@@ -210,10 +213,7 @@ public:
             margo_addr_free(m_mid, sa);
         }
         sdskv_client_finalize(m_kvcl);
-        //
-        rc = ssg_group_unobserve(m_gid);
-        if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
-        rc = ssg_group_destroy(m_gid);
+
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
         rc = ssg_finalize();
         if (rc != SSG_SUCCESS) return SDSDKV_ERR_SERVICE;
@@ -261,7 +261,7 @@ public:
             return(rc);
         }
         //
-        int num_addrs = 0;
+        int num_addrs = 1;
         ssg_group_id_deserialize(gid_bits, gid_size_ul, &num_addrs, &m_gid);
         //
         if (gid_bits) free(gid_bits);

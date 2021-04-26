@@ -55,6 +55,8 @@ enum {
     SDSDKV_ERR_PUT,
     /** Unknown key error. */
     SDSDKV_ERR_UNKNOWN_KEY,
+    /** Key exists error. */
+    SDSDKV_ERR_KEYEXISTS,
     /** Size error. */
     SDSDKV_ERR_SIZE,
     /** Erase error. */
