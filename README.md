@@ -47,7 +47,7 @@ source spack/share/spack/setup-env.sh
 #spack load -r autoconf
 #spack load -r automake
 #spack load -r libtool
-source <(spack module tcl loads mochi-sdskv mochi-ssg mochi-ch-placement autoconf automake libtool pkg-config)
+source <(spack module tcl loads mochi-sdskv mochi-ssg mochi-ch-placement mochi-margo mercury argobots json-c mochi-abt-io leveldb berkeley-db autoconf automake libtool pkg-config)
 ```
 
 ### Get and build sdsdkv.
@@ -55,6 +55,12 @@ source <(spack module tcl loads mochi-sdskv mochi-ssg mochi-ch-placement autocon
 ```
 git clone https://github.com/mochi-hpc/mochi-sdsdkv.git
 cd mochi-sdsdkv && autoreconf --force --install && ./configure CXX=mpic++ && make
+```
+
+### Test Distributed key value build
+
+```
+mpirun -n 2 tests/trivial
 ```
 
 Some of the possible errors and their solutions:
